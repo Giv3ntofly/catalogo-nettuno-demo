@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0b3c66">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Nettuno Ordini">
+    <title>Catalogo Ordini Nettuno 2026</title>
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" href="assets/icons/icon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="assets/styles.css">
+  </head>
+  <body>
+    <div class="auth-screen" id="authScreen">
+      <form class="auth-panel" id="authForm">
+        <p class="eyebrow">Accesso clienti registrati</p>
+        <h1>Catalogo ordini Nettuno 2026</h1>
+        <label>
+          Ragione sociale
+          <input name="company" autocomplete="organization" required>
+        </label>
+        <label>
+          Email cliente
+          <input name="email" type="email" autocomplete="email" required>
+        </label>
+        <label>
+          Referente
+          <input name="contact" autocomplete="name">
+        </label>
+        <button type="submit" class="primary-action">Entra nel catalogo</button>
+      </form>
+    </div>
+
+    <div class="app-shell" id="appShell" hidden>
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Strumento professionale ordine/preventivo</p>
+          <h1>Catalogo ordini Nettuno 2026</h1>
+        </div>
+        <div class="top-actions">
+          <button class="ghost-button" id="openPdfButton" type="button">Consulta PDF</button>
+          <button class="ghost-button" id="downloadCatalogPdfButton" type="button">Scarica PDF</button>
+          <a class="ghost-button" href="docs/catalogo-master-estratto.csv" download>Tabella master</a>
+          <button class="ghost-button" id="saveCartButton" type="button">Salva carrello</button>
+          <button class="ghost-button" id="logoutButton" type="button">Esci</button>
+        </div>
+      </header>
+
+      <main class="workspace">
+        <aside class="sidebar" aria-label="Categorie catalogo">
+          <div class="customer-card">
+            <span id="customerCompany"></span>
+            <small id="customerEmail"></small>
+          </div>
+          <nav id="categoryList"></nav>
+        </aside>
+
+        <section class="catalog-panel">
+          <div class="catalog-toolbar">
+            <div>
+              <h2 id="categoryTitle">Catalogo</h2>
+              <p id="categoryIntro"></p>
+            </div>
+            <label class="search-field">
+              Cerca codice o modello
+              <input id="searchInput" type="search" placeholder="Es. TE24, Majestic, PE03">
+            </label>
+          </div>
+          <div class="status-row" id="statusRow"></div>
+          <div class="product-grid" id="productGrid"></div>
+        </section>
+
+        <aside class="cart-panel" aria-label="Carrello ordine">
+          <div class="cart-header">
+            <div>
+              <p class="eyebrow">Carrello</p>
+              <h2 id="cartTitle">0 articoli</h2>
+            </div>
+            <button class="icon-button" id="clearCartButton" type="button" title="Svuota carrello">×</button>
+          </div>
+          <div class="cart-list" id="cartList"></div>
+          <div class="cart-footer">
+            <label>
+              Tipo richiesta
+              <select id="requestType">
+                <option value="preventivo">Preventivo</option>
+                <option value="ordine">Ordine</option>
+              </select>
+            </label>
+            <label>
+              Note generali
+              <textarea id="generalNotes" rows="3" placeholder="Indicazioni generali per questo carrello"></textarea>
+            </label>
+            <button class="primary-action" id="printOrderButton" type="button">Genera PDF ordine</button>
+            <button class="secondary-action" id="mailOrderButton" type="button">Prepara email</button>
+            <div class="save-status" id="saveStatus">Carrello non ancora salvato in questa sessione.</div>
+          </div>
+        </aside>
+      </main>
+    </div>
+
+    <dialog class="product-dialog" id="productDialog">
+      <form method="dialog" class="dialog-shell">
+        <button class="icon-button close-button" value="cancel" type="submit" title="Chiudi">×</button>
+        <div class="dialog-media">
+          <img id="dialogImage" alt="">
+        </div>
+        <div class="dialog-content">
+          <p class="eyebrow" id="dialogCategory"></p>
+          <h2 id="dialogTitle"></h2>
+          <p id="dialogSummary"></p>
+          <div class="spec-list" id="dialogSpecs"></div>
+          <div id="dialogForm"></div>
+          <div class="dialog-actions">
+            <button class="secondary-action" value="cancel" type="submit">Annulla</button>
+            <button class="primary-action" id="addToCartButton" value="default" type="button">Aggiungi al carrello</button>
+          </div>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="pdf-dialog" id="pdfDialog">
+      <form method="dialog" class="pdf-shell">
+        <button class="icon-button close-button" value="cancel" type="submit" title="Chiudi">×</button>
+        <h2>Catalogo PDF</h2>
+        <p><a href="Catalogo_Nettuno_2026_WEB.pdf" target="_blank" rel="noopener">Apri il catalogo nel lettore PDF</a></p>
+        <iframe src="Catalogo_Nettuno_2026_WEB.pdf" title="Catalogo Nettuno 2026"></iframe>
+      </form>
+    </dialog>
+
+    <section id="printRoot" aria-hidden="true"></section>
+
+    <script src="assets/catalog-extracted.js" defer></script>
+    <script src="assets/catalog-data.js" defer></script>
+    <script src="assets/app.js" defer></script>
+  </body>
+</html>

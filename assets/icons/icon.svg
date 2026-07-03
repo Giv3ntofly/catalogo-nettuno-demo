@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Nettuno ordini">
+  <rect width="512" height="512" rx="96" fill="#0b3c66"/>
+  <path d="M96 330c42-54 82-81 120-81 45 0 79 38 124 38 29 0 55-16 76-48v78c-26 28-55 42-88 42-45 0-80-38-124-38-36 0-72 25-108 75v-66z" fill="#7fc5ee"/>
+  <path d="M110 195c52-54 101-81 148-81 57 0 105 38 144 113-52-31-100-47-145-47-48 0-97 22-147 66v-51z" fill="#ffffff"/>
+  <path d="M125 266h262" stroke="#ffffff" stroke-width="28" stroke-linecap="round"/>
+  <text x="256" y="435" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="64" font-weight="800" fill="#ffffff">N</text>
+</svg>
