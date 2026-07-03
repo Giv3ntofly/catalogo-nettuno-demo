@@ -293,6 +293,7 @@ function renderConsultOnly(product) {
     "Apri una scheda prodotto compatibile per selezionare questa lavorazione.",
     "Il configuratore la mostra solo dove prevista e impedisce combinazioni non compatibili."
   ];
+  const variants = product.variants || [];
 
   return `
     <div class="config-section">
@@ -301,6 +302,14 @@ function renderConsultOnly(product) {
       <div class="detail-list">
         ${details.map(item => `<span>${escapeHtml(item)}</span>`).join("")}
       </div>
+      ${variants.length ? `
+        <div class="code-list">
+          <span>Codici di riferimento</span>
+          <ul>
+            ${variants.map(variant => `<li><strong>${escapeHtml(variant.code)}</strong>${variant.label ? ` - ${escapeHtml(variant.label)}` : ""}</li>`).join("")}
+          </ul>
+        </div>
+      ` : ""}
     </div>
   `;
 }
@@ -345,9 +354,23 @@ function renderVariantField(product) {
   if (!product.variants || !product.variants.length) {
     return "";
   }
+  if (product.variants.length === 1) {
+    const variant = product.variants[0];
+    return `
+      <div class="fixed-code">
+        <span>Codice articolo</span>
+        <strong>${escapeHtml(variant.code)}</strong>
+        ${variant.label && variant.label !== "Codice unico" ? `<small>${escapeHtml(variant.label)}</small>` : ""}
+        <input id="variantSelect" type="hidden" value="0">
+      </div>
+    `;
+  }
+  const label = ["accessori-inox", "accessori-nylon", "accessori-rollbar-ttop", "personalizzazioni"].includes(product.categoryId)
+    ? "Codice / misura"
+    : "Codice / larghezza / altezza";
   return `
     <label>
-      Codice / larghezza / altezza
+      ${label}
       <select id="variantSelect">
         <option value="">Seleziona codice</option>
         ${renderVariantOptions(product.variants)}

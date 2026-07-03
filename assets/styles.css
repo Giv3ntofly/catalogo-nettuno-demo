@@ -296,14 +296,16 @@ textarea:focus {
   padding: 18px;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(235px, 1fr));
+  grid-auto-rows: 540px;
   align-content: start;
   gap: 14px;
 }
 
 .product-card {
   display: grid;
-  grid-template-rows: 180px auto;
-  min-height: 360px;
+  grid-template-rows: 220px 1fr;
+  min-height: 0;
+  height: 100%;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: #fff;
@@ -312,17 +314,19 @@ textarea:focus {
 
 .product-card img {
   width: 100%;
-  height: 180px;
+  height: 220px;
   object-fit: contain;
   object-position: center;
   background: #fff;
-  padding: 8px;
+  padding: 10px;
 }
 
 .product-body {
   display: grid;
+  grid-template-rows: auto auto minmax(82px, 1fr) auto auto;
   gap: 10px;
   padding: 13px;
+  min-height: 0;
 }
 
 .product-kicker {
@@ -350,6 +354,7 @@ textarea:focus {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+  align-content: start;
 }
 
 .chip {
@@ -375,6 +380,12 @@ textarea:focus {
   gap: 8px;
   cursor: pointer;
   font-weight: 750;
+}
+
+.product-body > .primary-action,
+.product-body > .secondary-action {
+  align-self: end;
+  width: 100%;
 }
 
 .primary-action {
@@ -648,6 +659,41 @@ textarea:focus {
   margin-top: 2px;
 }
 
+.fixed-code {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 10px 12px;
+  min-height: 58px;
+  background: #fff;
+}
+
+.fixed-code span,
+.code-list span {
+  display: block;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.fixed-code strong {
+  display: block;
+  margin-top: 3px;
+}
+
+.code-list {
+  display: grid;
+  gap: 8px;
+}
+
+.code-list ul {
+  margin: 6px 0 0;
+  padding-left: 18px;
+}
+
+.code-list li {
+  margin: 3px 0;
+}
+
 .notice {
   border-left: 4px solid var(--amber);
   background: #fff8e8;
@@ -801,6 +847,7 @@ textarea:focus {
 
   .product-grid {
     grid-template-columns: 1fr;
+    grid-auto-rows: 520px;
   }
 
   .dialog-media img {

@@ -299,6 +299,7 @@ window.CATALOG_DATA = (() => {
   ];
 
   const preview = page => `assets/previews/page-${String(page).padStart(3, "0")}.png`;
+  const itemImage = name => `assets/items/${name}.jpg`;
 
   const biminiProduct = ({
     id,
@@ -370,6 +371,36 @@ window.CATALOG_DATA = (() => {
     requiresCanvasColor: true,
     canvasColorGroup: "sunbrella",
     allowCustomNotes: true
+  });
+
+  const catalogItem = ({
+    id,
+    categoryId,
+    name,
+    subtitle = "",
+    image,
+    page,
+    pages,
+    summary,
+    specs = [],
+    variants = [],
+    consultOnly = false,
+    consultDetails = [],
+    allowCustomNotes = true
+  }) => ({
+    id,
+    categoryId,
+    name,
+    subtitle,
+    image,
+    pages: pages || (page ? [page] : []),
+    summary,
+    specs,
+    variants: fixedVariants(variants),
+    requiresCanvasColor: false,
+    consultOnly,
+    consultDetails,
+    allowCustomNotes
   });
 
   const products = [
@@ -459,7 +490,8 @@ window.CATALOG_DATA = (() => {
       requiresCanvasColor: true,
       canvasColorGroup: "sunbrella",
       extensionGroup: "prestige",
-      customizations: ["edgeZipper", "ledWaterproof", "light360", "solarPanel", "customPrint"]
+      customizations: ["edgeZipper", "ledWaterproof", "light360", "solarPanel", "customPrint"],
+      standardNotes: ["Cerniere sotto archi di serie"]
     },
     biminiProduct({
       id: "look-up-4",
@@ -928,7 +960,7 @@ window.CATALOG_DATA = (() => {
       categoryId: "rollbar",
       name: "Epic Inox",
       subtitle: "Roll bar",
-      image: "assets/previews/epic-inox-063.png",
+      image: itemImage("rollbar-epic-inox"),
       pages: [62, 63],
       summary: "Roll bar in acciaio inox lucido 316L con piastra laterale in plexiglass nero.",
       specs: ["Altezza 130 cm", "Lunghezza 320 cm", "Tenditori a nastro di serie"],
@@ -1476,14 +1508,736 @@ window.CATALOG_DATA = (() => {
     }
   ];
 
+  const inoxProducts = [
+    catalogItem({
+      id: "inox-supporto-forcella-piatto-vite",
+      categoryId: "accessori-inox",
+      name: "Supporto a forcella piatto con vite",
+      subtitle: "Flat deck hinge with screw",
+      image: itemImage("inox-supporto-forcella-piatto-vite"),
+      page: 116,
+      summary: "Supporto inox AISI 316 per installazione tendalino su superficie piana.",
+      specs: ["Acciaio inox AISI 316", "Installazione su superficie piana"],
+      variants: [{ code: "AT05-023", label: "Codice unico" }]
+    }),
+    catalogItem({
+      id: "inox-supporto-forcella-piatto-perno-sfilabile",
+      categoryId: "accessori-inox",
+      name: "Supporto a forcella piatto con perno sfilabile",
+      subtitle: "Flat deck hinge with removable pin",
+      image: itemImage("inox-supporto-forcella-piatto-perno-sfilabile"),
+      page: 116,
+      summary: "Supporto inox AISI 316 per installazione tendalino su superficie piana.",
+      specs: ["Acciaio inox AISI 316", "Perno sfilabile"],
+      variants: [{ code: "AT05-022", label: "Codice unico" }]
+    }),
+    catalogItem({
+      id: "inox-supporto-forcella-snodata-180",
+      categoryId: "accessori-inox",
+      name: "Supporto con forcella snodata a 180 gradi",
+      subtitle: "180 swivelling deck hinge",
+      image: itemImage("inox-supporto-forcella-snodata-180"),
+      page: 116,
+      summary: "Supporto inox AISI 316 orientabile, per murata o superficie piana.",
+      specs: ["Acciaio inox AISI 316", "Orientabile 180 gradi"],
+      variants: [{ code: "AT05-019", label: "Codice unico" }]
+    }),
+    catalogItem({
+      id: "inox-supporto-forcella-snodata-180-perno",
+      categoryId: "accessori-inox",
+      name: "Supporto con forcella snodata a 180 gradi con perno sfilabile",
+      subtitle: "180 swivelling deck hinge with pin",
+      image: itemImage("inox-supporto-forcella-snodata-180-perno"),
+      page: 116,
+      summary: "Supporto inox AISI 316 orientabile con perno sfilabile.",
+      specs: ["Acciaio inox AISI 316", "Perno sfilabile"],
+      variants: [{ code: "AT05-018", label: "Codice unico" }]
+    }),
+    catalogItem({
+      id: "inox-supporto-forcella-sgancio-rapido",
+      categoryId: "accessori-inox",
+      name: "Supporto con forcella a sgancio rapido",
+      subtitle: "Deck hinge with snap hooking system",
+      image: itemImage("inox-supporto-forcella-gancio-rapido"),
+      page: 116,
+      summary: "Supporto inox AISI 316 per installazione tendalino su murata o superficie piana.",
+      specs: ["Acciaio inox AISI 316", "Sgancio rapido"],
+      variants: [{ code: "AT05-017", label: "Codice unico" }]
+    }),
+    catalogItem({
+      id: "inox-supporto-forcella-snodata-180-misure",
+      categoryId: "accessori-inox",
+      name: "Supporto con forcella snodata a 180 gradi",
+      subtitle: "180 swivelling deck hinge",
+      image: itemImage("inox-supporto-forcella-snodata-180-misure"),
+      page: 116,
+      summary: "Supporto inox AISI 316 orientabile, disponibile per tubo 22 o 25 mm.",
+      specs: ["Acciaio inox AISI 316"],
+      variants: [
+        { code: "AT05-012-22", label: "22 mm" },
+        { code: "AT05-012-25", label: "25 mm" }
+      ]
+    }),
+    catalogItem({
+      id: "inox-supporto-alta-stabilita-tubo",
+      categoryId: "accessori-inox",
+      name: "Supporto ad alta stabilita per tubo",
+      subtitle: "High stability deck hinge",
+      image: itemImage("inox-supporto-alta-stabilita-tubo"),
+      page: 116,
+      summary: "Supporto inox AISI 316 ad alta stabilita per tubo da 22 o 25 mm.",
+      specs: ["Acciaio inox AISI 316"],
+      variants: [
+        { code: "AT05-009", label: "22 mm" },
+        { code: "AT05-010", label: "25 mm" }
+      ]
+    }),
+    catalogItem({
+      id: "inox-supporto-parete",
+      categoryId: "accessori-inox",
+      name: "Supporto a parete",
+      subtitle: "Bulkhead mount deck hinge",
+      image: itemImage("inox-supporto-parete"),
+      page: 116,
+      summary: "Supporto inox AISI 316 per installazione del tendalino sulla murata della barca.",
+      specs: ["Acciaio inox AISI 316", "48 x 73 mm"],
+      variants: [{ code: "AT05-024", label: "Codice unico" }]
+    }),
+    catalogItem({
+      id: "inox-supporto-forcella-concavo-perno-sfilabile",
+      categoryId: "accessori-inox",
+      name: "Supporto a forcella concavo con perno sfilabile",
+      subtitle: "Concave deck hinge with removable pin",
+      image: itemImage("inox-supporto-forcella-concavo-perno-sfilabile"),
+      page: 116,
+      summary: "Supporto inox AISI 316 concavo con perno sfilabile per tubo da 20 a 25 mm.",
+      specs: ["Acciaio inox AISI 316"],
+      variants: [{ code: "AT05-020", label: "Da 20 a 25 mm" }]
+    }),
+    catalogItem({
+      id: "inox-supporto-forcella-concavo-vite-20-25",
+      categoryId: "accessori-inox",
+      name: "Supporto a forcella concavo con vite",
+      subtitle: "Concave deck hinge with screw",
+      image: itemImage("inox-supporto-forcella-concavo-vite-20-25"),
+      page: 117,
+      summary: "Supporto inox AISI 316 concavo con vite per tubo da 20 a 25 mm.",
+      specs: ["Acciaio inox AISI 316"],
+      variants: [{ code: "AT05-021", label: "Da 20 a 25 mm" }]
+    }),
+    catalogItem({
+      id: "inox-supporto-forcella-concavo-vite-40",
+      categoryId: "accessori-inox",
+      name: "Supporto a forcella concavo con vite",
+      subtitle: "Concave deck hinge with screw",
+      image: itemImage("inox-supporto-forcella-concavo-vite-40"),
+      page: 117,
+      summary: "Supporto inox AISI 316 concavo con vite per tubo 40 mm.",
+      specs: ["Acciaio inox AISI 316"],
+      variants: [{ code: "AT05-031", label: "40 mm" }]
+    }),
+    catalogItem({
+      id: "inox-snodo-forcella-apribile-vite",
+      categoryId: "accessori-inox",
+      name: "Snodo a forcella apribile con vite",
+      subtitle: "Opening jaw slide with screw",
+      image: itemImage("inox-snodo-forcella-apribile-vite"),
+      page: 117,
+      summary: "Snodo apribile inox AISI 316 per tubo da 22 a 30 mm.",
+      specs: ["Acciaio inox AISI 316"],
+      variants: [
+        { code: "AT05-007-22", label: "22 mm" },
+        { code: "AT05-007-25", label: "25 mm" },
+        { code: "AT05-007-30", label: "30 mm" }
+      ]
+    }),
+    catalogItem({
+      id: "inox-snodo-forcella-apribile-perno-sfilabile",
+      categoryId: "accessori-inox",
+      name: "Snodo a forcella apribile con perno sfilabile",
+      subtitle: "Opening jaw slide with pin",
+      image: itemImage("inox-snodo-forcella-apribile-perno-sfilabile"),
+      page: 117,
+      summary: "Snodo apribile inox AISI 316 con perno sfilabile, per tubo da 22 a 30 mm.",
+      specs: ["Acciaio inox AISI 316"],
+      variants: [
+        { code: "AT05-006-22", label: "22 mm" },
+        { code: "AT05-006-25", label: "25 mm" },
+        { code: "AT05-006-30", label: "30 mm" }
+      ]
+    }),
+    catalogItem({
+      id: "inox-snodo-forcella-apribile",
+      categoryId: "accessori-inox",
+      name: "Snodo a forcella apribile",
+      subtitle: "Opening jaw slide",
+      image: itemImage("inox-snodo-forcella-apribile"),
+      page: 117,
+      summary: "Snodo a forcella apribile in acciaio inox per tubo 35 mm.",
+      specs: ["Acciaio inox", "35 mm"],
+      variants: [{ code: "AT05-025", label: "35 mm" }]
+    }),
+    catalogItem({
+      id: "inox-curva-90-microfusa",
+      categoryId: "accessori-inox",
+      name: "Curva a 90 gradi microfusa",
+      subtitle: "Elbow 90",
+      image: itemImage("inox-curva-90-microfusa"),
+      page: 117,
+      summary: "Curva inox AISI 316 per tubo da 22 o 25 mm.",
+      specs: ["Acciaio inox AISI 316"],
+      variants: [
+        { code: "AT05-004-22", label: "22 mm" },
+        { code: "AT05-004-25", label: "25 mm" }
+      ]
+    }),
+    catalogItem({
+      id: "inox-cappuccio-terminale",
+      categoryId: "accessori-inox",
+      name: "Cappuccio terminale",
+      subtitle: "Top cap",
+      image: itemImage("inox-cappuccio-terminale"),
+      page: 117,
+      summary: "Cappuccio terminale inox AISI 316 per tubo da 20 a 40 mm.",
+      specs: ["Acciaio inox AISI 316"],
+      variants: [
+        { code: "AT05-002-20", label: "20 mm" },
+        { code: "AT05-002-22", label: "22 mm" },
+        { code: "AT05-002-25", label: "25 mm" },
+        { code: "AT05-002-30", label: "30 mm" },
+        { code: "AT05-002-40", label: "40 mm" }
+      ]
+    }),
+    catalogItem({
+      id: "inox-snodo-forcella",
+      categoryId: "accessori-inox",
+      name: "Snodo a forcella",
+      subtitle: "Jaw slide",
+      image: itemImage("inox-snodo-forcella"),
+      page: 117,
+      summary: "Snodo a forcella inox AISI 316 per tubo da 20 a 40 mm.",
+      specs: ["Acciaio inox AISI 316"],
+      variants: [
+        { code: "AT05-008-20", label: "20 mm" },
+        { code: "AT05-008-22", label: "22 mm" },
+        { code: "AT05-008-25", label: "25 mm" },
+        { code: "AT05-008-30", label: "30 mm" },
+        { code: "AT05-008-40", label: "40 mm" }
+      ]
+    }),
+    catalogItem({
+      id: "inox-cerniera-snodata",
+      categoryId: "accessori-inox",
+      name: "Cerniera snodata",
+      subtitle: "Jointed hinge",
+      image: itemImage("inox-cerniera-snodata"),
+      page: 117,
+      summary: "Cerniera snodata inox AISI 316 con perno di blocco.",
+      specs: ["Acciaio inox AISI 316"],
+      variants: [
+        { code: "AT05-003-22", label: "22 mm" },
+        { code: "AT05-003-25", label: "25 mm" }
+      ]
+    }),
+    catalogItem({
+      id: "inox-t-90-microfusa",
+      categoryId: "accessori-inox",
+      name: "T 90 microfusa",
+      subtitle: "Tee 90",
+      image: itemImage("inox-t-90-microfusa"),
+      page: 118,
+      summary: "T a 90 gradi inox AISI 316 per tubo da 22 a 40 mm.",
+      specs: ["Acciaio inox AISI 316"],
+      variants: [
+        { code: "AT05-013-22", label: "22 mm" },
+        { code: "AT05-013-25", label: "25 mm" },
+        { code: "AT05-013-30", label: "30 mm" },
+        { code: "AT05-013-40", label: "40 mm" }
+      ]
+    }),
+    catalogItem({
+      id: "inox-t-90-stampata",
+      categoryId: "accessori-inox",
+      name: "T 90 stampata",
+      subtitle: "Welded tee 90",
+      image: itemImage("inox-t-90-stampata"),
+      page: 118,
+      summary: "T a 90 gradi stampata inox AISI 316 per tubo 22 o 25 mm.",
+      specs: ["Acciaio inox AISI 316"],
+      variants: [
+        { code: "AT05-014-22", label: "22 mm" },
+        { code: "AT05-014-25", label: "25 mm" }
+      ]
+    }),
+    catalogItem({
+      id: "inox-raccordo-tubi-telescopici",
+      categoryId: "accessori-inox",
+      name: "Raccordo per tubi telescopici",
+      subtitle: "Connectors for telescopic tubes",
+      image: itemImage("inox-raccordo-tubi-telescopici"),
+      page: 118,
+      summary: "Raccordo inox AISI 316 per tubi telescopici.",
+      specs: ["Acciaio inox AISI 316"],
+      variants: [{ code: "AT05-027", label: "22-25 mm" }]
+    }),
+    catalogItem({
+      id: "inox-perno-sfilabile",
+      categoryId: "accessori-inox",
+      name: "Perno sfilabile in acciaio inox",
+      subtitle: "Removable drop nose pin",
+      image: itemImage("inox-perno-sfilabile-inox"),
+      page: 118,
+      summary: "Perno inox AISI 316 con linguetta pieghevole a molla.",
+      specs: ["Acciaio inox AISI 316"],
+      variants: [{ code: "AT05-026", label: "6 mm" }]
+    }),
+    catalogItem({
+      id: "inox-tensionatore-bimini",
+      categoryId: "accessori-inox",
+      name: "Tensionatore per bimini",
+      subtitle: "Bimini tensioner",
+      image: itemImage("inox-tensionatore-bimini"),
+      page: 118,
+      summary: "Tensionatore in acciaio inox AISI 316 per struttura tendalino.",
+      specs: ["Acciaio inox AISI 316"],
+      variants: [
+        { code: "AT05-016-22", label: "22 mm" },
+        { code: "AT05-016-25", label: "25 mm" },
+        { code: "AT05-016-30", label: "30 mm" }
+      ]
+    }),
+    catalogItem({
+      id: "inox-tappo-tubo",
+      categoryId: "accessori-inox",
+      name: "Tappo per tubo",
+      subtitle: "Bullet end plug for tube",
+      image: itemImage("inox-tappo-tubo"),
+      page: 118,
+      summary: "Tappo terminale inox AISI 316 per tubo da 20 a 30 mm.",
+      specs: ["Acciaio inox AISI 316"],
+      variants: [
+        { code: "AT05-015-20", label: "20 mm" },
+        { code: "AT05-015-22", label: "22 mm" },
+        { code: "AT05-015-25", label: "25 mm" },
+        { code: "AT05-015-30", label: "30 mm" }
+      ]
+    }),
+    catalogItem({
+      id: "inox-base-tonda-tubo",
+      categoryId: "accessori-inox",
+      name: "Base tonda per tubo",
+      subtitle: "Round tube base",
+      image: itemImage("inox-base-tonda-tubo"),
+      page: 118,
+      summary: "Base tonda inox AISI 316 per tubo da 22 o 25 mm.",
+      specs: ["Acciaio inox AISI 316"],
+      variants: [
+        { code: "AT05-001-22", label: "22 mm" },
+        { code: "AT05-001-25", label: "25 mm" }
+      ]
+    }),
+    catalogItem({
+      id: "inox-giunzione-tubo",
+      categoryId: "accessori-inox",
+      name: "Giunzione per tubo",
+      subtitle: "Tube connection",
+      image: itemImage("inox-giunzione-tubo"),
+      page: 118,
+      summary: "Giunzione inox AISI 316 per tubo da 22 o 25 mm.",
+      specs: ["Acciaio inox AISI 316"],
+      variants: [
+        { code: "AT05-005-22", label: "22 mm" },
+        { code: "AT05-005-25", label: "25 mm" }
+      ]
+    }),
+    catalogItem({
+      id: "inox-cappuccio-terminale-forcella",
+      categoryId: "accessori-inox",
+      name: "Cappuccio terminale a forcella",
+      subtitle: "Fork end cap",
+      image: itemImage("inox-cappuccio-terminale-forcella"),
+      page: 118,
+      summary: "Cappuccio terminale a forcella in acciaio inox.",
+      specs: ["Acciaio inox"],
+      variants: [{ code: "AT05-032", label: "25 mm" }]
+    }),
+    catalogItem({
+      id: "inox-molla-tubi-telescopici-8",
+      categoryId: "accessori-inox",
+      name: "Molla con nottolino per tubi telescopici",
+      subtitle: "Stainless steel spring",
+      image: itemImage("inox-molla-tubi-telescopici-8mm"),
+      page: 119,
+      summary: "Molla inox AISI 316 con nottolino, sezione nottolino 8 mm.",
+      specs: ["Acciaio inox AISI 316", "Nottolino 8 mm"],
+      variants: [
+        { code: "AT05-028", label: "Alto" },
+        { code: "AT05-029", label: "Basso" }
+      ]
+    }),
+    catalogItem({
+      id: "inox-molla-tubi-telescopici-6",
+      categoryId: "accessori-inox",
+      name: "Molla con nottolino per tubi telescopici",
+      subtitle: "Stainless steel spring",
+      image: itemImage("inox-molla-tubi-telescopici-6mm"),
+      page: 119,
+      summary: "Molla inox AISI 316 con nottolino, sezione nottolino 6 mm.",
+      specs: ["Acciaio inox AISI 316", "Nottolino 6 mm"],
+      variants: [{ code: "AT05-033", label: "Basso" }]
+    }),
+    catalogItem({
+      id: "inox-basetta-epdm-forcella",
+      categoryId: "accessori-inox",
+      name: "Basetta in EPDM con forcella inox",
+      subtitle: "EPDM support with steel fork",
+      image: itemImage("inox-basetta-epdm-forcella"),
+      page: 119,
+      summary: "Basetta in EPDM con forcella inox per installazione tendalino su gommone.",
+      specs: ["EPDM", "Forcella inox"],
+      variants: [{ code: "AT04-001", label: "Codice unico" }]
+    }),
+    catalogItem({
+      id: "inox-supporto-epdm",
+      categoryId: "accessori-inox",
+      name: "Supporto in EPDM",
+      subtitle: "EPDM support",
+      image: itemImage("inox-supporto-epdm"),
+      page: 119,
+      summary: "Supporto in EPDM per installazione tendalino su gommone.",
+      specs: ["EPDM", "Incollaggio su tubolari"],
+      variants: [
+        { code: "AT04-003", label: "Nero" },
+        { code: "AT04-002", label: "Grigio" }
+      ]
+    })
+  ];
+
+  const nylonProducts = [
+    catalogItem({
+      id: "nylon-supporto-forcella-piatto-vite",
+      categoryId: "accessori-nylon",
+      name: "Supporto a forcella piatto con vite",
+      subtitle: "Flat deck hinge with screw",
+      image: itemImage("nylon-supporto-forcella-piatto-vite"),
+      page: 120,
+      summary: "Supporto in nylon per installazione tendalino su superficie piana.",
+      specs: ["Nylon", "Interasse fori 4 cm"],
+      variants: [
+        { code: "AT06-013", label: "Bianco" },
+        { code: "AT06-014", label: "Nero" }
+      ]
+    }),
+    catalogItem({
+      id: "nylon-supporto-parete",
+      categoryId: "accessori-nylon",
+      name: "Supporto a parete",
+      subtitle: "Side mount deck hinge",
+      image: itemImage("nylon-supporto-parete"),
+      page: 120,
+      summary: "Supporto in nylon per installazione tendalino su murata.",
+      specs: ["Nylon", "Interasse fori 4 cm"],
+      variants: [
+        { code: "AT06-015", label: "Bianco" },
+        { code: "AT06-016", label: "Nero" }
+      ]
+    }),
+    catalogItem({
+      id: "nylon-boccola",
+      categoryId: "accessori-nylon",
+      name: "Boccola",
+      subtitle: "Rowlock attachment",
+      image: itemImage("nylon-boccola"),
+      page: 120,
+      summary: "Boccola in nylon per installazione tendalino a scalmiere.",
+      specs: ["Nylon"],
+      variants: [
+        { code: "AT06-003", label: "Bianco" },
+        { code: "AT06-004", label: "Nero" }
+      ]
+    }),
+    catalogItem({
+      id: "nylon-cappuccio-terminale",
+      categoryId: "accessori-nylon",
+      name: "Cappuccio terminale",
+      subtitle: "End cap",
+      image: itemImage("nylon-cappuccio-terminale"),
+      page: 120,
+      summary: "Cappuccio terminale in nylon per tubo 20 o 22 mm.",
+      specs: ["Nylon"],
+      variants: [
+        { code: "AT06-005", label: "20 mm - Bianco" },
+        { code: "AT06-006", label: "20 mm - Nero" },
+        { code: "AT06-017", label: "22 mm - Bianco" }
+      ]
+    }),
+    catalogItem({
+      id: "nylon-piedino-boccola",
+      categoryId: "accessori-nylon",
+      name: "Piedino per boccola",
+      subtitle: "Rowlock attachment pin",
+      image: itemImage("nylon-piedino-boccola"),
+      page: 120,
+      summary: "Piedino in nylon diametro 12 mm.",
+      specs: ["Nylon", "12 mm"],
+      variants: [
+        { code: "AT06-009", label: "Bianco" },
+        { code: "AT06-010", label: "Nero" }
+      ]
+    }),
+    catalogItem({
+      id: "nylon-attacco-tubo",
+      categoryId: "accessori-nylon",
+      name: "Attacco per tubo",
+      subtitle: "Mounting clip for tube",
+      image: itemImage("nylon-attacco-tubo"),
+      page: 120,
+      summary: "Attacco in nylon per installazione tendalino su tubo 25 mm.",
+      specs: ["Nylon", "25 mm"],
+      variants: [
+        { code: "AT06-001", label: "Bianco" },
+        { code: "AT06-002", label: "Nero" }
+      ]
+    }),
+    catalogItem({
+      id: "nylon-snodo",
+      categoryId: "accessori-nylon",
+      name: "Snodo",
+      subtitle: "Articulated joint",
+      image: itemImage("nylon-snodo"),
+      page: 120,
+      summary: "Snodo in nylon per tendalino con tubo 20 mm.",
+      specs: ["Nylon", "20 mm"],
+      variants: [
+        { code: "AT06-011", label: "Bianco" },
+        { code: "AT06-012", label: "Nero" }
+      ]
+    }),
+    catalogItem({
+      id: "nylon-giunto",
+      categoryId: "accessori-nylon",
+      name: "Giunto",
+      subtitle: "Jaw slide",
+      image: itemImage("nylon-giunto"),
+      page: 120,
+      summary: "Giunto in nylon per tendalino con tubo 20 o 22 mm.",
+      specs: ["Nylon"],
+      variants: [
+        { code: "AT06-007", label: "20 mm - Bianco" },
+        { code: "AT06-008", label: "20 mm - Nero" },
+        { code: "AT06-018", label: "22 mm - Bianco" }
+      ]
+    })
+  ];
+
+  const rollbarTtopProducts = [
+    catalogItem({
+      id: "rollbar-contropiastra",
+      categoryId: "accessori-rollbar-ttop",
+      name: "Contropiastra inferiore per Roll Bar",
+      subtitle: "Counterplate for roll bar",
+      image: itemImage("rollbar-contropiastra"),
+      page: 124,
+      summary: "Contropiastra inox 304 dedicata ai roll bar compatibili.",
+      specs: ["AR01-002", "Acciaio inox"],
+      variants: [{ code: "AR01-002", label: "Acciaio inox" }],
+      consultOnly: true,
+      consultDetails: ["Accessorio consultabile: viene proposto dentro il configuratore dei roll bar compatibili."]
+    }),
+    catalogItem({
+      id: "rollbar-fanale-fonda-plastica",
+      categoryId: "accessori-rollbar-ttop",
+      name: "Fanale di fonda 360 gradi plastica",
+      subtitle: "360 plastic mooring light",
+      image: itemImage("rollbar-fanale-fonda-plastica"),
+      page: 125,
+      summary: "Fanale di fonda 360 gradi a LED in plastica bianca.",
+      specs: ["AR02-002", "12 Volt"],
+      variants: [{ code: "AR02-002", label: "Plastica bianca" }],
+      consultOnly: true,
+      consultDetails: ["Accessorio consultabile: viene proposto dentro il configuratore dei roll bar o T-Top compatibili."]
+    }),
+    catalogItem({
+      id: "rollbar-fanale-fonda-inox",
+      categoryId: "accessori-rollbar-ttop",
+      name: "Fanale di fonda 360 gradi inox",
+      subtitle: "360 stainless steel mooring light",
+      image: itemImage("rollbar-fanale-fonda-inox"),
+      page: 125,
+      summary: "Fanale di fonda 360 gradi a LED in acciaio inox AISI 316.",
+      specs: ["AR02-001", "12 Volt"],
+      variants: [{ code: "AR02-001", label: "Acciaio inox" }],
+      consultOnly: true,
+      consultDetails: ["Accessorio consultabile: viene proposto dentro il configuratore dei roll bar o T-Top compatibili."]
+    }),
+    catalogItem({
+      id: "rollbar-luci-via-nemo",
+      categoryId: "accessori-rollbar-ttop",
+      name: "Luci di via Nemo",
+      subtitle: "Nemo navigation lights",
+      image: itemImage("rollbar-luci-via-nemo"),
+      page: 125,
+      summary: "Coppia luci di via Nemo sinistra 112,5 gradi e destra 112,5 gradi.",
+      specs: ["AR02-008"],
+      variants: [{ code: "AR02-008", label: "Sinistra e destra" }],
+      consultOnly: true,
+      consultDetails: ["Accessorio consultabile: viene proposto dentro il configuratore dei roll bar o T-Top compatibili."]
+    }),
+    catalogItem({
+      id: "rollbar-plafoniera-compatta",
+      categoryId: "accessori-rollbar-ttop",
+      name: "Plafoniera compatta",
+      subtitle: "Compact overhead light",
+      image: itemImage("rollbar-plafoniera-compatta"),
+      page: 125,
+      summary: "Luce compatta a 8 LED in acciaio inox lucidato e vetro.",
+      specs: ["AR02-003", "12/24 Volt"],
+      variants: [{ code: "AR02-003", label: "Plafoniera compatta" }],
+      consultOnly: true,
+      consultDetails: ["Accessorio consultabile: viene proposto dentro il configuratore dei roll bar o T-Top compatibili."]
+    })
+  ];
+
+  const customizationProducts = [
+    catalogItem({
+      id: "custom-teli-prolunga",
+      categoryId: "personalizzazioni",
+      name: "Teli di prolunga",
+      subtitle: "Extension canvases",
+      image: itemImage("custom-teli-prolunga"),
+      pages: [128, 129, 130, 131],
+      summary: "Teli anteriori, laterali e posteriori selezionabili solo dentro i modelli compatibili.",
+      specs: ["Stesso tessuto/colore del tendalino oppure rete microforata"],
+      variants: [{ code: "PE01", label: "Codici variabili secondo modello" }],
+      consultOnly: true,
+      consultDetails: ["Ordinabili dal configuratore dei bimini e roll bar compatibili.", "Le cerniere sono gestite automaticamente quando il modello lo prevede."]
+    }),
+    catalogItem({
+      id: "custom-cerniere-bordo",
+      categoryId: "personalizzazioni",
+      name: "Cerniere su bordo",
+      subtitle: "Zippers on edge",
+      image: itemImage("custom-cerniere-bordo"),
+      page: 132,
+      summary: "Predisposizione con cerniera divisibile YKK lungo uno dei lati del telo.",
+      specs: ["PE03-001"],
+      variants: [{ code: "PE03-001", label: "Prua, poppa, lato destro o lato sinistro" }],
+      consultOnly: true,
+      consultDetails: ["Ordinabile dal configuratore dei prodotti compatibili.", "Se vengono selezionati teli di prolunga, la cerniera di unione non viene duplicata."]
+    }),
+    catalogItem({
+      id: "custom-cerniere-sotto-archi",
+      categoryId: "personalizzazioni",
+      name: "Cerniere sotto archi",
+      subtitle: "Zippers under the arches",
+      image: itemImage("custom-cerniere-sotto-archi"),
+      page: 133,
+      summary: "Applicazione cerniera utile a rimuovere il telo dalla struttura senza smontarla.",
+      specs: ["PE03-002"],
+      variants: [{ code: "PE03-002", label: "Applicazione cerniera sotto archi" }],
+      consultOnly: true,
+      consultDetails: ["Ordinabile solo sui modelli compatibili.", "Su alcuni modelli puo essere dotazione di serie."]
+    }),
+    catalogItem({
+      id: "custom-led-waterproof",
+      categoryId: "personalizzazioni",
+      name: "LED waterproof",
+      subtitle: "Waterproof LED application",
+      image: itemImage("custom-led-waterproof"),
+      page: 134,
+      summary: "Strip LED waterproof integrata al centro del tendalino.",
+      specs: ["PE02-001", "100 cm o 150 cm"],
+      variants: [
+        { code: "PE02-001", label: "Applicazione LED waterproof" },
+        { code: "PE02-005", label: "Strip LED 100 cm" },
+        { code: "PE02-006", label: "Strip LED 150 cm" }
+      ],
+      consultOnly: true,
+      consultDetails: ["Ordinabile dal configuratore dei prodotti compatibili.", "La strip LED e una sola e viene installata al centro del tendalino."]
+    }),
+    catalogItem({
+      id: "custom-luce-360",
+      categoryId: "personalizzazioni",
+      name: "Applicazione luce 360 gradi",
+      subtitle: "360 light application",
+      image: itemImage("custom-luce-360"),
+      page: 135,
+      summary: "Predisposizione per fanale di fonda a 360 gradi sul tendalino tramite T-90 inox.",
+      specs: ["PE04-001", "AR02-001"],
+      variants: [
+        { code: "PE04-001", label: "Applicazione luce 360 gradi" },
+        { code: "AR02-001", label: "Fanale di fonda 360 gradi inox" }
+      ],
+      consultOnly: true,
+      consultDetails: ["Ordinabile dal configuratore dei prodotti compatibili."]
+    }),
+    catalogItem({
+      id: "custom-pannello-solare",
+      categoryId: "personalizzazioni",
+      name: "Applicazione pannello solare",
+      subtitle: "Solar panel application",
+      image: itemImage("custom-pannello-solare-cerniera"),
+      page: 136,
+      summary: "Applicazione pannello solare su telo con cerniera o bottoni Tenax.",
+      specs: ["PE08-001", "PE08-002"],
+      variants: [
+        { code: "PE08-001", label: "Con cerniera" },
+        { code: "PE08-002", label: "Con bottoni Tenax" }
+      ],
+      consultOnly: true,
+      consultDetails: ["Ordinabile dal configuratore dei prodotti compatibili.", "La scelta tra cerniera e bottoni Tenax avviene sul prodotto compatibile."]
+    }),
+    catalogItem({
+      id: "custom-taglio-rollbar",
+      categoryId: "personalizzazioni",
+      name: "Taglio roll bar",
+      subtitle: "Cut of the roll bar",
+      image: itemImage("custom-taglio-rollbar"),
+      page: 137,
+      summary: "Taglio su misura della barra centrale del roll bar.",
+      specs: ["PE07-001"],
+      variants: [{ code: "PE07-001", label: "Taglio barra centrale roll bar" }],
+      consultOnly: true,
+      consultDetails: ["Lavorazione dedicata ai roll bar compatibili.", "Da non confondere con la stampa personalizzata."]
+    }),
+    catalogItem({
+      id: "custom-stampa-personalizzata",
+      categoryId: "personalizzazioni",
+      name: "Stampa personalizzata",
+      subtitle: "Customized printing",
+      image: itemImage("custom-stampa-personalizzata"),
+      page: 137,
+      summary: "Stampa personalizzata su tessuto acrilico, PVC o poliestere.",
+      specs: ["PE06-001"],
+      variants: [{ code: "PE06-001", label: "Stampa personalizzata" }],
+      consultOnly: true,
+      consultDetails: ["Richiede file vettoriale in fase esecutiva.", "La lavorazione viene proposta dentro i prodotti compatibili."]
+    })
+  ];
+
+  const curatedCategoryIds = new Set([
+    "accessori-inox",
+    "accessori-nylon",
+    "accessori-rollbar-ttop",
+    "personalizzazioni"
+  ]);
+  const curatedProducts = [
+    ...products.filter(product => !curatedCategoryIds.has(product.categoryId)),
+    ...inoxProducts,
+    ...nylonProducts,
+    ...rollbarTtopProducts,
+    ...customizationProducts
+  ];
+
   const extractedPayload = window.CATALOG_EXTRACTED || { products: [], totalCodes: 0, generatedProducts: 0 };
   const extractedProducts = extractedPayload.products || [];
   const hiddenExtractedIds = new Set(["estratto-pe02"]);
-  const usedProductIds = new Set(products.map(product => product.id));
+  const usedProductIds = new Set(curatedProducts.map(product => product.id));
   const allProducts = [
-    ...products,
+    ...curatedProducts,
     ...extractedProducts.filter(product => {
       if (hiddenExtractedIds.has(product.id)) return false;
+      if (curatedCategoryIds.has(product.categoryId)) return false;
       if (usedProductIds.has(product.id)) return false;
       usedProductIds.add(product.id);
       return true;
