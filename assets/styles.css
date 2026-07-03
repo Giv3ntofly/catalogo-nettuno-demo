@@ -203,6 +203,15 @@ textarea:focus {
   gap: 4px;
 }
 
+.category-heading {
+  padding: 8px 10px 6px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
 .category-button {
   display: grid;
   grid-template-columns: 1fr auto;

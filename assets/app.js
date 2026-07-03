@@ -150,13 +150,23 @@ function updateAccess() {
 
 function renderCategories() {
   const list = $("categoryList");
-  list.innerHTML = "";
+  list.replaceChildren();
+
+  const heading = document.createElement("div");
+  heading.className = "category-heading";
+  heading.textContent = "Sezioni catalogo";
+  list.appendChild(heading);
 
   DATA.categories.forEach(category => {
     const button = document.createElement("button");
     button.type = "button";
     button.className = `category-button${category.id === state.categoryId ? " active" : ""}${category.parent ? " child" : ""}`;
-    button.innerHTML = `<span>${escapeHtml(category.name)}</span><span class="badge">${getProductCount(category.id)}</span>`;
+    const label = document.createElement("span");
+    label.textContent = category.name;
+    const badge = document.createElement("span");
+    badge.className = "badge";
+    badge.textContent = getProductCount(category.id);
+    button.append(label, badge);
     button.addEventListener("click", () => {
       state.categoryId = category.id;
       renderCategories();
@@ -172,17 +182,22 @@ function getProductCount(categoryId) {
 
 function renderProducts() {
   const category = DATA.categories.find(item => item.id === state.categoryId);
-  $("categoryTitle").textContent = category ? category.name : "Catalogo";
-  $("categoryIntro").textContent = category ? category.intro : "";
+  const isSearching = Boolean(state.search);
+  $("categoryTitle").textContent = isSearching ? "Risultati ricerca" : (category ? category.name : "Catalogo");
+  $("categoryIntro").textContent = isSearching
+    ? "Ricerca estesa a tutte le sezioni del catalogo."
+    : (category ? category.intro : "");
 
   const products = DATA.products
-    .filter(product => product.categoryId === state.categoryId)
+    .filter(product => isSearching || product.categoryId === state.categoryId)
     .filter(matchesSearch);
 
   const extractedInfo = DATA.extraction?.totalCodes
     ? ` Base master: ${DATA.extraction.totalCodes} codici PDF, ${DATA.extraction.generatedProducts} famiglie demo aggiunte.`
     : "";
-  $("statusRow").textContent = `${products.length} schede in questa vista.${extractedInfo}`;
+  $("statusRow").textContent = isSearching
+    ? `${products.length} schede trovate in tutto il catalogo.${extractedInfo}`
+    : `${products.length} schede in questa vista.${extractedInfo}`;
 
   const grid = $("productGrid");
   grid.innerHTML = "";
@@ -202,6 +217,7 @@ function renderProducts() {
         <h3>${escapeHtml(product.name)}</h3>
         <p>${escapeHtml(product.summary || "")}</p>
         <div class="meta-line">
+          ${isSearching ? `<span class="chip">${escapeHtml(getCategoryName(product.categoryId))}</span>` : ""}
           ${product.pages ? `<span class="chip">PDF p. ${product.pages.join("-")}</span>` : ""}
           ${product.variants ? `<span class="chip">${product.variants.length} codici</span>` : ""}
           ${product.requiresCanvasColor ? `<span class="chip">colore obbligatorio</span>` : ""}
@@ -220,13 +236,22 @@ function renderProducts() {
 function matchesSearch(product) {
   if (!state.search) return true;
   const haystack = [
+    getCategoryName(product.categoryId),
     product.name,
     product.subtitle,
     product.summary,
     product.pages ? product.pages.join(" ") : "",
     ...(product.variants || []).flatMap(variant => [variant.code, variant.label])
   ].join(" ").toLowerCase();
-  return haystack.includes(state.search);
+  return haystack.includes(state.search) || normalizeSearchText(haystack).includes(normalizeSearchText(state.search));
+}
+
+function normalizeSearchText(value) {
+  return String(value || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[\s\-_/]+/g, "");
 }
 
 function openProduct(productId) {
