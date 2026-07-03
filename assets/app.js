@@ -320,7 +320,7 @@ function renderConfigurationForm(product) {
           Riferimento ordine
           <input id="orderReference" placeholder="Posto barca, nome barca, armatore o codice interno">
         </label>
-        ${product.requiresCanvasColor ? renderCanvasColorField() : ""}
+        ${product.requiresCanvasColor ? renderCanvasColorField(product) : ""}
       </div>
     </div>
     ${renderProductDetailsSection(product)}
@@ -392,14 +392,45 @@ function renderProductDetailsSection(product) {
   `;
 }
 
-function renderCanvasColorField() {
+function getCanvasColorGroup(product) {
+  const groupKey = product.canvasColorGroup || "sunbrella";
+  return DATA.canvasColorGroups?.[groupKey] || {
+    label: "Sunbrella Plus",
+    material: "acrilico resinato",
+    colors: DATA.canvasColors || []
+  };
+}
+
+function getCanvasColorsForProduct(product) {
+  if (Array.isArray(product.canvasColors)) return product.canvasColors;
+  return getCanvasColorGroup(product).colors || DATA.canvasColors || [];
+}
+
+function getCanvasFabricForProduct(product) {
+  const group = getCanvasColorGroup(product);
+  return {
+    id: product.canvasColorGroup || "sunbrella",
+    label: group.label,
+    material: group.material
+  };
+}
+
+function formatCanvasFabric(fabric) {
+  if (!fabric) return "";
+  return [fabric.label, fabric.material].filter(Boolean).join(" - ");
+}
+
+function renderCanvasColorField(product) {
+  const group = getCanvasColorGroup(product);
+  const colors = getCanvasColorsForProduct(product);
   return `
     <label>
       Colore telo
       <select id="canvasColorSelect">
         <option value="">Seleziona colore</option>
-        ${DATA.canvasColors.map(color => `<option value="${escapeHtml(color.code)}">${escapeHtml(color.label)}</option>`).join("")}
+        ${colors.map(color => `<option value="${escapeHtml(color.code)}">${escapeHtml(color.label)}</option>`).join("")}
       </select>
+      <span class="help-text">Tessuto: ${escapeHtml(formatCanvasFabric(group))}</span>
     </label>
   `;
 }
@@ -724,6 +755,7 @@ function collectProductConfiguration(product) {
   const reference = String($("orderReference")?.value || "").trim();
   const notes = String($("itemNotes")?.value || "").trim();
   const canvasColor = collectCanvasColor(product, errors);
+  const canvasFabric = canvasColor ? getCanvasFabricForProduct(product) : null;
   const customizations = collectCustomizations(product, errors);
   const files = collectFileNames();
 
@@ -737,6 +769,7 @@ function collectProductConfiguration(product) {
     quantity,
     reference,
     variant,
+    canvasFabric,
     canvasColor,
     customizations,
     notes,
@@ -764,7 +797,7 @@ function collectCanvasColor(product, errors) {
     errors.push("Seleziona il colore telo: è obbligatorio per ordinare o richiedere preventivo.");
     return null;
   }
-  return DATA.canvasColors.find(color => color.code === select.value) || null;
+  return getCanvasColorsForProduct(product).find(color => color.code === select.value) || null;
 }
 
 function collectCustomizations(product, errors) {
@@ -895,6 +928,7 @@ function renderCart() {
       </header>
       <ul>
         ${item.reference ? `<li>Riferimento: ${escapeHtml(item.reference)}</li>` : ""}
+        ${item.canvasFabric ? `<li>Tessuto telo: ${escapeHtml(formatCanvasFabric(item.canvasFabric))}</li>` : ""}
         ${item.canvasColor ? `<li>Colore telo: ${escapeHtml(item.canvasColor.label)}</li>` : ""}
         ${item.variant?.label ? `<li>${escapeHtml(item.variant.label)}</li>` : ""}
         ${item.customizations.map(custom => `<li>${escapeHtml(custom.name)} · ${escapeHtml(custom.code)} · ${escapeHtml(custom.details)}</li>`).join("")}
@@ -934,6 +968,7 @@ function buildPrintDocument() {
         </td>
         <td>
           ${item.reference ? `Riferimento: ${escapeHtml(item.reference)}<br>` : ""}
+          ${item.canvasFabric ? `Tessuto telo: ${escapeHtml(formatCanvasFabric(item.canvasFabric))}<br>` : ""}
           ${item.canvasColor ? `Colore telo: ${escapeHtml(item.canvasColor.label)}<br>` : ""}
           ${customizations}
         </td>
@@ -1008,6 +1043,7 @@ function buildOrderLines() {
     if (item.variant) lines.push(`Codice: ${item.variant.code} - ${item.variant.label}`);
     lines.push(`Quantita: ${item.quantity}`);
     if (item.reference) lines.push(`Riferimento ordine: ${item.reference}`);
+    if (item.canvasFabric) lines.push(`Tessuto telo: ${formatCanvasFabric(item.canvasFabric)}`);
     if (item.canvasColor) lines.push(`Colore telo: ${item.canvasColor.label}`);
     item.customizations.forEach(custom => {
       lines.push(`Lavorazione: ${custom.name} - ${custom.code} - ${custom.details}`);
@@ -1174,6 +1210,7 @@ function buildMailBody() {
     lines.push(`Codice: ${item.variant?.code || ""}`);
     lines.push(`Quantita: ${item.quantity}`);
     if (item.reference) lines.push(`Riferimento ordine: ${item.reference}`);
+    if (item.canvasFabric) lines.push(`Tessuto telo: ${formatCanvasFabric(item.canvasFabric)}`);
     if (item.canvasColor) lines.push(`Colore telo: ${item.canvasColor.label}`);
     item.customizations.forEach(custom => lines.push(`Custom: ${custom.name} - ${custom.code} - ${custom.details}`));
     item.files.forEach(file => lines.push(`Allegato indicato: ${file}`));

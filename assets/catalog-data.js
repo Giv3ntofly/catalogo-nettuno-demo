@@ -21,7 +21,7 @@ window.CATALOG_DATA = (() => {
       details: row.details || ""
     }));
 
-  const canvasColors = [
+  const sunbrellaColors = [
     ["5020", "Natural"],
     ["P023", "Artic Blue"],
     ["5030", "Oyster"],
@@ -40,7 +40,38 @@ window.CATALOG_DATA = (() => {
     ["P053", "Steel"],
     ["P055", "Papyrus"],
     ["5032", "Jet Black"]
-  ].map(([code, name]) => ({ code, name, label: `${code} - ${name}` }));
+  ].map(([code, name]) => ({ code, name, label: `${code} - ${name}`, fabric: "sunbrella" }));
+
+  const polyesterColors = [
+    ["9577", "White"],
+    ["9816", "Beige"],
+    ["9526", "Yellow"],
+    ["9527", "Orange"],
+    ["9675", "Red"],
+    ["9879", "Bordeaux"],
+    ["9710", "Green"],
+    ["9701", "Blue Sky"],
+    ["9793", "Lagoon"],
+    ["9545", "Blue"],
+    ["9876", "Silver"],
+    ["9741", "Grey"],
+    ["9654", "Dark Grey"],
+    ["9853", "Black"]
+  ].map(([code, name]) => ({ code, name, label: `${code} - ${name}`, fabric: "polyester" }));
+
+  const canvasColors = sunbrellaColors;
+  const canvasColorGroups = {
+    sunbrella: {
+      label: "Sunbrella Plus",
+      material: "acrilico resinato",
+      colors: sunbrellaColors
+    },
+    polyester: {
+      label: "Mehler Airtex Classic",
+      material: "poliestere resinato",
+      colors: polyesterColors
+    }
+  };
 
   const meshColors = [
     ["TN06-003", "Bianco"],
@@ -279,6 +310,7 @@ window.CATALOG_DATA = (() => {
     variants,
     extensionGroup = "",
     customizations = ["edgeZipper", "ledWaterproof"],
+    canvasColorGroup = "polyester",
     summary = "Tendalino configurabile con codice/misura, colore telo obbligatorio e lavorazioni compatibili."
   }) => ({
     id,
@@ -291,6 +323,7 @@ window.CATALOG_DATA = (() => {
     specs,
     variants,
     requiresCanvasColor: true,
+    canvasColorGroup,
     ...(extensionGroup ? { extensionGroup } : {}),
     customizations
   });
@@ -306,6 +339,7 @@ window.CATALOG_DATA = (() => {
     requiresCanvasColor = true,
     extensionGroup = "",
     customizations = ["edgeZipper"],
+    canvasColorGroup = "sunbrella",
     summary = "Roll bar configurabile da catalogo 2026."
   }) => ({
     id,
@@ -318,6 +352,7 @@ window.CATALOG_DATA = (() => {
     specs,
     variants,
     requiresCanvasColor,
+    canvasColorGroup,
     ...(extensionGroup ? { extensionGroup } : {}),
     customizations
   });
@@ -333,6 +368,7 @@ window.CATALOG_DATA = (() => {
     specs: ["Tessuto acrilico resinato", "Colore telo obbligatorio"],
     variants,
     requiresCanvasColor: true,
+    canvasColorGroup: "sunbrella",
     allowCustomNotes: true
   });
 
@@ -348,6 +384,7 @@ window.CATALOG_DATA = (() => {
       specs: ["Peso medio 35 kg", "Velocita consigliata 35 nodi", "Altezza 140 cm", "Lunghezza 320 cm"],
       variants: widthVariants(sharedBiminiRowsLarge.map(([suffix, cm, inches]) => [`TE24-${suffix}`, cm, inches]), "altezza 140 cm"),
       requiresCanvasColor: true,
+      canvasColorGroup: "sunbrella",
       extensionGroup: "exclusive-majestic",
       customizations: ["edgeZipper", "ledWaterproof", "light360", "solarPanel", "customPrint"],
       standardNotes: ["Cerniere sotto archi di serie", "Fasce di sostegno per archi centrali di serie"]
@@ -363,6 +400,7 @@ window.CATALOG_DATA = (() => {
       specs: ["Peso medio 25 kg", "Velocita consigliata 30 nodi", "Altezza 140 cm", "Lunghezza 320 cm"],
       variants: widthVariants(sharedBiminiRowsLarge.map(([suffix, cm, inches]) => [`TE01-${suffix}`, cm, inches]), "altezza 140 cm"),
       requiresCanvasColor: true,
+      canvasColorGroup: "sunbrella",
       extensionGroup: "exclusive-majestic",
       customizations: ["edgeZipper", "ledWaterproof", "light360", "solarPanel", "customPrint"],
       standardNotes: ["Cerniere sotto archi di serie", "Fasce di sostegno per archi centrali di serie"]
@@ -399,6 +437,7 @@ window.CATALOG_DATA = (() => {
         ], "altezza 140 cm")
       ],
       requiresCanvasColor: true,
+      canvasColorGroup: "sunbrella",
       extensionGroup: "royal-lookup-4",
       customizations: ["edgeZipper", "underArchZipper", "ledWaterproof", "light360", "customPrint"]
     },
@@ -418,6 +457,7 @@ window.CATALOG_DATA = (() => {
         ["TE02-E10A", 290, 114]
       ], "altezza 140 cm"),
       requiresCanvasColor: true,
+      canvasColorGroup: "sunbrella",
       extensionGroup: "prestige",
       customizations: ["edgeZipper", "ledWaterproof", "light360", "solarPanel", "customPrint"]
     },
@@ -451,6 +491,7 @@ window.CATALOG_DATA = (() => {
         ], "altezza 140 cm")
       ],
       extensionGroup: "royal-lookup-4",
+      canvasColorGroup: "sunbrella",
       customizations: ["edgeZipper", "underArchZipper", "ledWaterproof", "light360", "customPrint"]
     }),
     biminiProduct({
@@ -486,6 +527,7 @@ window.CATALOG_DATA = (() => {
         ], "serie E")
       ],
       extensionGroup: "royal-lookup-3",
+      canvasColorGroup: "sunbrella",
       customizations: ["edgeZipper", "underArchZipper", "ledWaterproof", "light360", "customPrint"]
     }),
     biminiProduct({
@@ -506,6 +548,7 @@ window.CATALOG_DATA = (() => {
         ["TE18-E10L", 290, 114]
       ], "altezza 140 cm"),
       extensionGroup: "royal-lookup-4",
+      canvasColorGroup: "sunbrella",
       customizations: ["edgeZipper", "underArchZipper", "ledWaterproof", "light360", "customPrint"]
     }),
     biminiProduct({
@@ -541,6 +584,7 @@ window.CATALOG_DATA = (() => {
         ], "serie E")
       ],
       extensionGroup: "royal-lookup-3",
+      canvasColorGroup: "sunbrella",
       customizations: ["edgeZipper", "underArchZipper", "ledWaterproof", "light360", "customPrint"]
     }),
     biminiProduct({
@@ -876,6 +920,7 @@ window.CATALOG_DATA = (() => {
         ["TE03-C14P", 140, 55]
       ]),
       customizations: ["customPrint"],
+      canvasColorGroup: "sunbrella",
       summary: "Tendalino estraibile in acciaio inox 316L e telo acrilico, prodotto su misura secondo il modello di barca."
     }),
     {
@@ -1451,6 +1496,9 @@ window.CATALOG_DATA = (() => {
     categories,
     products: allProducts,
     canvasColors,
+    sunbrellaColors,
+    polyesterColors,
+    canvasColorGroups,
     meshColors,
     extensionGroups,
     customizationInfo,
