@@ -7,9 +7,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="Nettuno Ordini">
     <title>Catalogo Ordini Nettuno 2026</title>
-    <link rel="manifest" href="manifest.webmanifest?v=20260703-5">
+    <link rel="manifest" href="manifest.webmanifest?v=20260703-6">
     <link rel="icon" href="assets/icons/icon.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="assets/styles.css?v=20260703-5">
+    <link rel="stylesheet" href="assets/styles.css?v=20260703-6">
   </head>
   <body>
     <div class="auth-screen" id="authScreen">
@@ -43,6 +43,11 @@
           <button class="ghost-button" id="downloadCatalogPdfButton" type="button">Scarica PDF</button>
           <a class="ghost-button" href="docs/catalogo-master-estratto.csv" download>Tabella master</a>
           <button class="ghost-button" id="saveCartButton" type="button">Salva carrello</button>
+          <button class="cart-toggle" id="openCartButton" type="button" aria-controls="cartPanel" aria-expanded="false" title="Apri carrello">
+            <span class="cart-symbol" aria-hidden="true">&#128722;</span>
+            <span>Carrello</span>
+            <span class="cart-badge" id="cartBadge">0</span>
+          </button>
           <button class="ghost-button" id="logoutButton" type="button">Esci</button>
         </div>
       </header>
@@ -71,13 +76,18 @@
           <div class="product-grid" id="productGrid"></div>
         </section>
 
-        <aside class="cart-panel" aria-label="Carrello ordine">
+        <div class="cart-backdrop" id="cartBackdrop" hidden></div>
+
+        <aside class="cart-panel" id="cartPanel" aria-label="Carrello ordine">
           <div class="cart-header">
             <div>
               <p class="eyebrow">Carrello</p>
               <h2 id="cartTitle">0 articoli</h2>
             </div>
-            <button class="icon-button" id="clearCartButton" type="button" title="Svuota carrello">×</button>
+            <div class="cart-header-actions">
+              <button class="small-ghost" id="clearCartButton" type="button" title="Svuota carrello">Svuota</button>
+              <button class="icon-button cart-close-button" id="closeCartButton" type="button" title="Chiudi carrello">x</button>
+            </div>
           </div>
           <div class="cart-list" id="cartList"></div>
           <div class="cart-footer">
@@ -131,8 +141,8 @@
 
     <section id="printRoot" aria-hidden="true"></section>
 
-    <script src="assets/catalog-extracted.js?v=20260703-5" defer></script>
-    <script src="assets/catalog-data.js?v=20260703-5" defer></script>
-    <script src="assets/app.js?v=20260703-5" defer></script>
+    <script src="assets/catalog-extracted.js?v=20260703-6" defer></script>
+    <script src="assets/catalog-data.js?v=20260703-6" defer></script>
+    <script src="assets/app.js?v=20260703-6" defer></script>
   </body>
 </html>

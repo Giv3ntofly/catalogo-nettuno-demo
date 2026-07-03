@@ -87,6 +87,15 @@ function bindEvents() {
   $("downloadCatalogPdfButton").addEventListener("click", downloadCatalogPdf);
   $("mailOrderButton").addEventListener("click", prepareEmail);
   $("addToCartButton").addEventListener("click", addActiveProductToCart);
+  $("openCartButton").addEventListener("click", openCartPanel);
+  $("closeCartButton").addEventListener("click", closeCartPanel);
+  $("cartBackdrop").addEventListener("click", closeCartPanel);
+
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape") {
+      closeCartPanel();
+    }
+  });
 }
 
 function loadState() {
@@ -769,6 +778,10 @@ function addActiveProductToCart() {
   renderCart();
   $("productDialog").close();
   showStatus(`${product.name} aggiunto al carrello.`);
+
+  if (window.matchMedia("(max-width: 760px)").matches) {
+    openCartPanel();
+  }
 }
 
 function collectProductConfiguration(product) {
@@ -926,7 +939,10 @@ function getCheckedValues(name) {
 }
 
 function renderCart() {
-  $("cartTitle").textContent = `${state.cart.length} ${state.cart.length === 1 ? "articolo" : "articoli"}`;
+  const itemCountLabel = `${state.cart.length} ${state.cart.length === 1 ? "articolo" : "articoli"}`;
+  $("cartTitle").textContent = itemCountLabel;
+  $("cartBadge").textContent = state.cart.length;
+  $("openCartButton").setAttribute("aria-label", `Apri carrello, ${itemCountLabel}`);
   $("requestType").value = state.requestType;
   $("generalNotes").value = state.generalNotes;
 
@@ -966,6 +982,20 @@ function renderCart() {
     });
     list.appendChild(element);
   });
+}
+
+function openCartPanel() {
+  $("appShell").classList.add("cart-open");
+  $("cartBackdrop").hidden = false;
+  $("openCartButton").setAttribute("aria-expanded", "true");
+  document.body.classList.add("cart-open");
+}
+
+function closeCartPanel() {
+  $("appShell").classList.remove("cart-open");
+  $("cartBackdrop").hidden = true;
+  $("openCartButton").setAttribute("aria-expanded", "false");
+  document.body.classList.remove("cart-open");
 }
 
 function buildPrintDocument() {
