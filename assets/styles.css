@@ -587,7 +587,7 @@ textarea:focus {
 
 .cart-item header {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: 104px minmax(0, 1fr) auto;
   align-items: start;
   gap: 12px;
 }
@@ -596,7 +596,8 @@ textarea:focus {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  min-width: 0;
+  width: 104px;
+  min-width: 104px;
   color: var(--muted);
   font-size: 13px;
   font-weight: 750;
