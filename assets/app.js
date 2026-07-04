@@ -71,6 +71,8 @@ function bindEvents() {
     }
   });
 
+  $("removeSelectedCartItemsButton").addEventListener("click", removeSelectedCartItems);
+
   $("requestType").addEventListener("change", event => {
     state.requestType = event.target.value;
     saveCart();
@@ -1076,8 +1078,11 @@ function renderCart() {
 
   if (!state.cart.length) {
     list.innerHTML = `<p class="empty-cart">Il carrello Ã¨ vuoto. Puoi salvare e riprendere anche carrelli parziali.</p>`;
+    $("removeSelectedCartItemsButton").disabled = true;
     return;
   }
+
+  $("removeSelectedCartItemsButton").disabled = false;
 
   state.cart.forEach(item => {
     const pricing = buildItemPricing(item);
@@ -1085,6 +1090,10 @@ function renderCart() {
     element.className = "cart-item";
     element.innerHTML = `
       <header>
+        <label class="cart-select-row">
+          <input type="checkbox" class="cart-select" value="${escapeHtml(item.id)}">
+          <span>Seleziona</span>
+        </label>
         <div>
           <h3>${escapeHtml(item.productName)}${item.subtitle ? ` Â· ${escapeHtml(item.subtitle)}` : ""}</h3>
           <small>${escapeHtml(item.variant?.code || "Codice da scheda")} Â· QtÃ  ${item.quantity}</small>
@@ -1112,6 +1121,19 @@ function renderCart() {
     });
     list.appendChild(element);
   });
+}
+
+function removeSelectedCartItems() {
+  const selectedIds = new Set(Array.from(document.querySelectorAll(".cart-select:checked")).map(input => input.value));
+  if (!selectedIds.size) {
+    showToast("Seleziona almeno un articolo da rimuovere.");
+    return;
+  }
+
+  state.cart = state.cart.filter(item => !selectedIds.has(item.id));
+  saveCart();
+  renderCart();
+  showToast(selectedIds.size === 1 ? "Articolo rimosso dal carrello." : "Articoli rimossi dal carrello.");
 }
 
 function renderCartPricingSummary(cartPricing = getCartPricing()) {
@@ -1528,6 +1550,8 @@ function escapeHtml(value) {
 function registerServiceWorker() {
   if (!("serviceWorker" in navigator)) return;
   if (!window.isSecureContext && location.hostname !== "localhost" && location.hostname !== "127.0.0.1") return;
-  navigator.serviceWorker.register("./sw.js").catch(() => {});
+  navigator.serviceWorker.register("./sw.js?v=20260704-4")
+    .then(registration => registration.update())
+    .catch(() => {});
 }
 

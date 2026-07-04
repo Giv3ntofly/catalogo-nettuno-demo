@@ -1,4 +1,4 @@
-const CACHE_NAME = "nettuno-catalogo-2026-v10";
+const CACHE_NAME = "nettuno-catalogo-2026-v11";
 
 const CORE_ASSETS = [
   "./",

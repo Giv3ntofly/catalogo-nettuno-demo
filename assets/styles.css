@@ -168,7 +168,7 @@ textarea:focus {
 
 .workspace {
   display: grid;
-  grid-template-columns: 240px minmax(0, 1fr) 340px;
+  grid-template-columns: 240px minmax(0, 1fr);
   gap: 16px;
   padding: 16px;
   height: calc(100vh - 86px);
@@ -482,9 +482,22 @@ textarea:focus {
 
 .cart-panel {
   min-width: 0;
-  display: grid;
+  display: none;
   grid-template-rows: auto 1fr auto;
   overflow: hidden;
+}
+
+.app-shell.cart-open .workspace {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.app-shell.cart-open .sidebar,
+.app-shell.cart-open .catalog-panel {
+  display: none;
+}
+
+.app-shell.cart-open .cart-panel {
+  display: grid;
 }
 
 .cart-backdrop {
@@ -525,8 +538,13 @@ textarea:focus {
   background: var(--surface-strong);
 }
 
+.small-ghost:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
 .cart-close-button {
-  display: none;
+  display: inline-flex;
 }
 
 .cart-list {
@@ -555,7 +573,17 @@ textarea:focus {
 .cart-item header {
   display: flex;
   justify-content: space-between;
+  align-items: start;
   gap: 8px;
+}
+
+.cart-select-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 750;
 }
 
 .cart-item h3 {
@@ -888,27 +916,23 @@ textarea:focus {
   }
 
   .cart-panel {
-    position: fixed;
-    inset: 0 0 0 auto;
-    z-index: 50;
-    width: min(430px, 100vw);
+    position: static;
+    inset: auto;
+    z-index: auto;
+    width: auto;
     min-height: 0;
-    border-radius: 0;
-    box-shadow: var(--shadow);
-    transform: translateX(105%);
-    transition: transform 180ms ease;
+    border-radius: 8px;
+    box-shadow: none;
+    transform: none;
+    transition: none;
   }
 
   .app-shell.cart-open .cart-panel {
-    transform: translateX(0);
+    transform: none;
   }
 
   .cart-backdrop {
-    position: fixed;
-    inset: 0;
-    z-index: 45;
-    display: block;
-    background: rgba(16, 32, 51, 0.42);
+    display: none;
   }
 
   .cart-backdrop[hidden] {
