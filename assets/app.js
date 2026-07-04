@@ -85,7 +85,7 @@ function bindEvents() {
 
   $("printOrderButton").addEventListener("click", () => {
     if (!state.cart.length) {
-      alert("Il carrello Ã¨ vuoto.");
+      alert("Il carrello è vuoto.");
       return;
     }
     downloadOrderPdf();
@@ -395,8 +395,8 @@ function openProduct(productId) {
   state.applyBothLateralZippers = false;
   $("dialogImage").src = product.image || "assets/previews/majestic-008.png";
   $("dialogImage").alt = product.name;
-  $("dialogCategory").textContent = `${getCategoryName(product.categoryId)}${product.pages ? ` Â· PDF p. ${product.pages.join("-")}` : ""}`;
-  $("dialogTitle").textContent = `${product.name}${product.subtitle ? ` Â· ${product.subtitle}` : ""}`;
+  $("dialogCategory").textContent = `${getCategoryName(product.categoryId)}${product.pages ? ` · PDF p. ${product.pages.join("-")}` : ""}`;
+  $("dialogTitle").textContent = `${product.name}${product.subtitle ? ` · ${product.subtitle}` : ""}`;
   $("dialogSummary").textContent = product.summary || "";
   $("dialogSpecs").innerHTML = [
     ...(product.specs || [])
@@ -415,7 +415,7 @@ function renderConsultOnlyLegacy(product) {
   return `
     <div class="config-section">
       <h3>Categoria consultabile</h3>
-      <p class="notice">Questa lavorazione Ã¨ visibile per informare il cliente, ma viene aggiunta solo dai prodotti compatibili. In questo modo il carrello impedisce combinazioni non previste.</p>
+      <p class="notice">Questa lavorazione è visibile per informare il cliente, ma viene aggiunta solo dai prodotti compatibili. In questo modo il carrello impedisce combinazioni non previste.</p>
     </div>
   `;
 }
@@ -430,7 +430,7 @@ function renderConsultOnly(product) {
   return `
     <div class="config-section">
       <h3>Scheda informativa</h3>
-      <p class="notice">Questa voce Ã¨ consultabile qui per far vedere la lavorazione, ma si aggiunge al carrello solo entrando in un prodotto compatibile.</p>
+      <p class="notice">Questa voce è consultabile qui per far vedere la lavorazione, ma si aggiunge al carrello solo entrando in un prodotto compatibile.</p>
       <div class="detail-list">
         ${details.map(item => `<span>${escapeHtml(item)}</span>`).join("")}
       </div>
@@ -454,7 +454,7 @@ function renderConfigurationForm(product) {
       <div class="field-grid">
         ${renderVariantField(product)}
         <label>
-          QuantitÃ 
+          Quantità
           <input id="itemQuantity" type="number" min="1" step="1" value="1">
         </label>
         <label>
@@ -637,18 +637,18 @@ function renderExtensionPosition(position) {
     return `
       <label class="check-row">
         <input type="checkbox" name="extensionPosition" value="${escapeHtml(position.id)}:dx" data-code="${escapeHtml(position.code)}" data-label="${escapeHtml(position.label)} destra" data-mark="${escapeHtml(position.mark)}">
-        <span>${escapeHtml(position.label)} destra <small>${escapeHtml(position.code)} Â· posizione ${escapeHtml(position.mark)} Â· ${escapeHtml(price)}</small></span>
+        <span>${escapeHtml(position.label)} destra <small>${escapeHtml(position.code)} · posizione ${escapeHtml(position.mark)} · ${escapeHtml(price)}</small></span>
       </label>
       <label class="check-row">
         <input type="checkbox" name="extensionPosition" value="${escapeHtml(position.id)}:sx" data-code="${escapeHtml(position.code)}" data-label="${escapeHtml(position.label)} sinistra" data-mark="${escapeHtml(position.mark)}">
-        <span>${escapeHtml(position.label)} sinistra <small>${escapeHtml(position.code)} Â· posizione ${escapeHtml(position.mark)} Â· ${escapeHtml(price)}</small></span>
+        <span>${escapeHtml(position.label)} sinistra <small>${escapeHtml(position.code)} · posizione ${escapeHtml(position.mark)} · ${escapeHtml(price)}</small></span>
       </label>
     `;
   }
   return `
     <label class="check-row">
       <input type="checkbox" name="extensionPosition" value="${escapeHtml(position.id)}" data-code="${escapeHtml(position.code)}" data-label="${escapeHtml(position.label)}" data-mark="${escapeHtml(position.mark)}">
-      <span>${escapeHtml(position.label)} <small>${escapeHtml(position.code)} Â· posizione ${escapeHtml(position.mark)} Â· ${escapeHtml(price)}</small></span>
+      <span>${escapeHtml(position.label)} <small>${escapeHtml(position.code)} · posizione ${escapeHtml(position.mark)} · ${escapeHtml(price)}</small></span>
     </label>
   `;
 }
@@ -691,7 +691,7 @@ function renderCustomizationsSection(product) {
             </label>
           `).join("")}
         </div>
-        <p class="notice" id="edgeZipperNotice" hidden>Hai selezionato teli di prolunga: la cerniera di unione Ã¨ giÃ  compresa per quei teli.</p>
+        <p class="notice" id="edgeZipperNotice" hidden>Hai selezionato teli di prolunga: la cerniera di unione è già compresa per quei teli.</p>
       </div>
     `);
   }
@@ -955,7 +955,7 @@ function collectCanvasColor(product, errors) {
   if (!product.requiresCanvasColor) return null;
   const select = $("canvasColorSelect");
   if (!select || !select.value) {
-    errors.push("Seleziona il colore telo: Ã¨ obbligatorio per ordinare o richiedere preventivo.");
+    errors.push("Seleziona il colore telo: è obbligatorio per ordinare o richiedere preventivo.");
     return null;
   }
   return getCanvasColorsForProduct(product).find(color => color.code === select.value) || null;
@@ -1077,7 +1077,7 @@ function renderCart() {
   list.innerHTML = "";
 
   if (!state.cart.length) {
-    list.innerHTML = `<p class="empty-cart">Il carrello Ã¨ vuoto. Puoi salvare e riprendere anche carrelli parziali.</p>`;
+    list.innerHTML = `<p class="empty-cart">Il carrello è vuoto. Puoi salvare e riprendere anche carrelli parziali.</p>`;
     $("removeSelectedCartItemsButton").disabled = true;
     return;
   }
@@ -1095,8 +1095,8 @@ function renderCart() {
           <span>Seleziona</span>
         </label>
         <div>
-          <h3>${escapeHtml(item.productName)}${item.subtitle ? ` Â· ${escapeHtml(item.subtitle)}` : ""}</h3>
-          <small>${escapeHtml(item.variant?.code || "Codice da scheda")} Â· QtÃ  ${item.quantity}</small>
+          <h3>${escapeHtml(item.productName)}${item.subtitle ? ` · ${escapeHtml(item.subtitle)}` : ""}</h3>
+          <small>${escapeHtml(item.variant?.code || "Codice da scheda")} · Qta ${item.quantity}</small>
         </div>
         <button class="remove-item" type="button" data-remove="${escapeHtml(item.id)}">Rimuovi</button>
       </header>
@@ -1105,7 +1105,7 @@ function renderCart() {
         ${item.canvasFabric ? `<li>Tessuto telo: ${escapeHtml(formatCanvasFabric(item.canvasFabric))}</li>` : ""}
         ${item.canvasColor ? `<li>Colore telo: ${escapeHtml(item.canvasColor.label)}</li>` : ""}
         ${item.variant?.label ? `<li>${escapeHtml(item.variant.label)}</li>` : ""}
-        ${item.customizations.map(custom => `<li>${escapeHtml(custom.name)} Â· ${escapeHtml(custom.code)} Â· ${escapeHtml(custom.details)}</li>`).join("")}
+        ${item.customizations.map(custom => `<li>${escapeHtml(custom.name)} · ${escapeHtml(custom.code)} · ${escapeHtml(custom.details)}</li>`).join("")}
         ${item.files.map(file => `<li>Allegato: ${escapeHtml(file)}</li>`).join("")}
         ${item.notes ? `<li>Note: ${escapeHtml(item.notes)}</li>` : ""}
       </ul>
@@ -1191,7 +1191,7 @@ function buildPrintDocument() {
         <td>
           ${escapeHtml(item.variant?.code || "")}<br>
           ${escapeHtml(item.variant?.label || "")}<br>
-          QtÃ  ${escapeHtml(String(item.quantity))}
+          Quantità ${escapeHtml(String(item.quantity))}
         </td>
         <td>
           ${item.reference ? `Riferimento: ${escapeHtml(item.reference)}<br>` : ""}
@@ -1231,7 +1231,7 @@ function buildPrintDocument() {
           <tr>
             <th>#</th>
             <th>Articolo</th>
-            <th>Codice e quantitÃ </th>
+            <th>Codice e quantità</th>
             <th>Configurazione</th>
             <th>Note e allegati</th>
             <th>Prezzi</th>
@@ -1416,7 +1416,7 @@ function latin1Bytes(value) {
 
 function prepareEmail() {
   if (!state.cart.length) {
-    alert("Il carrello Ã¨ vuoto.");
+    alert("Il carrello è vuoto.");
     return;
   }
 
@@ -1558,7 +1558,7 @@ function escapeHtml(value) {
 function registerServiceWorker() {
   if (!("serviceWorker" in navigator)) return;
   if (!window.isSecureContext && location.hostname !== "localhost" && location.hostname !== "127.0.0.1") return;
-  navigator.serviceWorker.register("./sw.js?v=20260704-8")
+  navigator.serviceWorker.register("./sw.js?v=20260704-9")
     .then(registration => registration.update())
     .catch(() => {});
 }

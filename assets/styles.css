@@ -596,9 +596,14 @@ textarea:focus {
   display: inline-flex;
   align-items: center;
   gap: 7px;
+  min-width: 0;
   color: var(--muted);
   font-size: 13px;
   font-weight: 750;
+}
+
+.cart-select-row input {
+  flex: 0 0 auto;
 }
 
 .cart-item h3 {
@@ -1133,6 +1138,29 @@ textarea:focus {
 
   .cart-panel {
     width: 100vw;
+  }
+
+  .cart-item header {
+    grid-template-columns: 44px minmax(0, 1fr) auto;
+    gap: 10px;
+  }
+
+  .cart-select-row {
+    display: grid;
+    justify-items: center;
+    gap: 3px;
+    font-size: 11px;
+    line-height: 1;
+  }
+
+  .cart-select-row input {
+    width: 36px;
+    height: 36px;
+  }
+
+  .cart-item h3,
+  .cart-item small {
+    overflow-wrap: anywhere;
   }
 
   .cart-footer {
