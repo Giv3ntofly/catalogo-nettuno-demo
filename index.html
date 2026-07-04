@@ -7,9 +7,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="Nettuno Ordini">
     <title>Catalogo Ordini Nettuno 2026</title>
-    <link rel="manifest" href="manifest.webmanifest?v=20260703-6">
+    <link rel="manifest" href="manifest.webmanifest?v=20260703-7">
     <link rel="icon" href="assets/icons/icon.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="assets/styles.css?v=20260703-6">
+    <link rel="stylesheet" href="assets/styles.css?v=20260703-7">
   </head>
   <body>
     <div class="auth-screen" id="authScreen">
@@ -37,6 +37,7 @@
         <div>
           <p class="eyebrow">Strumento professionale ordine/preventivo</p>
           <h1>Catalogo ordini Nettuno 2026</h1>
+          <p class="price-disclaimer">Prezzi di listino IVA esclusa</p>
         </div>
         <div class="top-actions">
           <button class="ghost-button" id="openPdfButton" type="button">Consulta PDF</button>
@@ -102,6 +103,7 @@
               Note generali
               <textarea id="generalNotes" rows="3" placeholder="Indicazioni generali per questo carrello"></textarea>
             </label>
+            <div class="cart-pricing-summary" id="cartPricingSummary">Totale listino IVA esclusa: 0,00&nbsp;€</div>
             <button class="primary-action" id="printOrderButton" type="button">Genera PDF ordine</button>
             <button class="secondary-action" id="mailOrderButton" type="button">Prepara email</button>
             <div class="save-status" id="saveStatus">Carrello non ancora salvato in questa sessione.</div>
@@ -141,8 +143,9 @@
 
     <section id="printRoot" aria-hidden="true"></section>
 
-    <script src="assets/catalog-extracted.js?v=20260703-6" defer></script>
-    <script src="assets/catalog-data.js?v=20260703-6" defer></script>
-    <script src="assets/app.js?v=20260703-6" defer></script>
+    <script src="assets/catalog-extracted.js?v=20260704-1" defer></script>
+    <script src="assets/catalog-data.js?v=20260704-1" defer></script>
+    <script src="assets/price-list.js?v=20260704-1" defer></script>
+    <script src="assets/app.js?v=20260704-1" defer></script>
   </body>
 </html>

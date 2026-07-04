@@ -1,4 +1,5 @@
 const DATA = window.CATALOG_DATA;
+const PRICE_LIST = window.PRICE_LIST || { currency: "EUR", prices: {} };
 
 const storageKeys = {
   customer: "nettunoCatalogCustomer",
@@ -16,6 +17,11 @@ const state = {
   lateralZipperPromptAnswered: false,
   applyBothLateralZippers: false
 };
+
+const moneyFormatter = new Intl.NumberFormat("it-IT", {
+  style: "currency",
+  currency: PRICE_LIST.currency || "EUR"
+});
 
 const $ = id => document.getElementById(id);
 
@@ -217,6 +223,7 @@ function renderProducts() {
   }
 
   products.forEach(product => {
+    const priceRange = getProductPriceRange(product);
     const card = document.createElement("article");
     card.className = "product-card";
     card.innerHTML = `
@@ -229,6 +236,7 @@ function renderProducts() {
           ${isSearching ? `<span class="chip">${escapeHtml(getCategoryName(product.categoryId))}</span>` : ""}
           ${product.pages ? `<span class="chip">PDF p. ${product.pages.join("-")}</span>` : ""}
           ${product.variants ? `<span class="chip">${product.variants.length} codici</span>` : ""}
+          ${priceRange ? `<span class="chip price-chip">${escapeHtml(priceRange)}</span>` : ""}
           ${product.requiresCanvasColor ? `<span class="chip">colore obbligatorio</span>` : ""}
           ${product.consultOnly ? `<span class="chip">consultabile</span>` : ""}
         </div>
@@ -261,6 +269,119 @@ function normalizeSearchText(value) {
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/[\s\-_/]+/g, "");
+}
+
+function getPrice(code) {
+  if (!code) return null;
+  const direct = PRICE_LIST.prices?.[code];
+  if (Number.isFinite(Number(direct))) return Number(direct);
+
+  const parts = String(code)
+    .split("+")
+    .map(part => part.trim())
+    .filter(Boolean);
+
+  if (parts.length <= 1) return null;
+
+  const partPrices = parts.map(part => PRICE_LIST.prices?.[part]);
+  if (partPrices.every(price => Number.isFinite(Number(price)))) {
+    return partPrices.reduce((total, price) => total + Number(price), 0);
+  }
+
+  return null;
+}
+
+function getPriceRequestNote(code) {
+  if (!code) return "";
+  const direct = PRICE_LIST.requestPrices?.[code];
+  if (direct) return direct;
+
+  const parts = String(code)
+    .split("+")
+    .map(part => part.trim())
+    .filter(Boolean);
+
+  return parts.map(part => PRICE_LIST.requestPrices?.[part]).find(Boolean) || "";
+}
+
+function hasPrice(code) {
+  return getPrice(code) !== null;
+}
+
+function formatMoney(value) {
+  return moneyFormatter.format(Number(value || 0));
+}
+
+function formatPrice(code) {
+  const price = getPrice(code);
+  if (price !== null) return formatMoney(price);
+  return getPriceRequestNote(code) ? "Prezzo su richiesta" : "Prezzo da definire";
+}
+
+function getProductPriceRange(product) {
+  const prices = (product.variants || [])
+    .map(variant => getPrice(variant.code))
+    .filter(price => price !== null);
+
+  if (!prices.length) return "";
+
+  const min = Math.min(...prices);
+  const max = Math.max(...prices);
+  return min === max ? formatMoney(min) : `${formatMoney(min)} - ${formatMoney(max)}`;
+}
+
+function buildItemPricing(item) {
+  const rows = [];
+
+  if (item.variant?.code) {
+    rows.push({
+      label: `${item.productName}${item.subtitle ? ` - ${item.subtitle}` : ""}`,
+      code: item.variant.code,
+      unitPrice: getPrice(item.variant.code),
+      priceNote: getPriceRequestNote(item.variant.code),
+      quantity: item.quantity
+    });
+  }
+
+  item.customizations.forEach(custom => {
+    rows.push({
+      label: custom.name,
+      code: custom.code,
+      unitPrice: getPrice(custom.code),
+      priceNote: getPriceRequestNote(custom.code),
+      quantity: item.quantity
+    });
+  });
+
+  const pricedRows = rows.filter(row => row.unitPrice !== null);
+  const missingRows = rows.filter(row => row.unitPrice === null);
+  const total = pricedRows.reduce((sum, row) => sum + row.unitPrice * row.quantity, 0);
+
+  return {
+    rows,
+    pricedRows,
+    missingRows,
+    total,
+    isComplete: rows.length > 0 && missingRows.length === 0
+  };
+}
+
+function getCartPricing() {
+  const items = state.cart.map(item => buildItemPricing(item));
+  return {
+    items,
+    total: items.reduce((sum, item) => sum + item.total, 0),
+    missingCount: items.reduce((sum, item) => sum + item.missingRows.length, 0),
+    isComplete: items.every(item => item.isComplete)
+  };
+}
+
+function formatPricingRow(row) {
+  if (row.unitPrice !== null) {
+    return `${row.code}: ${formatMoney(row.unitPrice)} x ${row.quantity} = ${formatMoney(row.unitPrice * row.quantity)}`;
+  }
+
+  return `${row.code}: ${row.priceNote || "Prezzo da definire"}`;
 }
 
 function openProduct(productId) {
@@ -315,7 +436,7 @@ function renderConsultOnly(product) {
         <div class="code-list">
           <span>Codici di riferimento</span>
           <ul>
-            ${variants.map(variant => `<li><strong>${escapeHtml(variant.code)}</strong>${variant.label ? ` - ${escapeHtml(variant.label)}` : ""}</li>`).join("")}
+            ${variants.map(variant => `<li><strong>${escapeHtml(variant.code)}</strong>${variant.label ? ` - ${escapeHtml(variant.label)}` : ""} <span class="price-inline">${escapeHtml(formatPrice(variant.code))}</span></li>`).join("")}
           </ul>
         </div>
       ` : ""}
@@ -370,6 +491,7 @@ function renderVariantField(product) {
         <span>Codice articolo</span>
         <strong>${escapeHtml(variant.code)}</strong>
         ${variant.label && variant.label !== "Codice unico" ? `<small>${escapeHtml(variant.label)}</small>` : ""}
+        <small class="${hasPrice(variant.code) ? "price-inline" : "price-missing"}">${escapeHtml(formatPrice(variant.code))}</small>
         <input id="variantSelect" type="hidden" value="0">
       </div>
     `;
@@ -402,7 +524,7 @@ function renderVariantOptions(variants) {
 
   return groups.map(group => {
     const options = group.options
-      .map(({ variant, index }) => `<option value="${index}">${escapeHtml(variant.label)}</option>`)
+      .map(({ variant, index }) => `<option value="${index}">${escapeHtml(`${variant.label} - ${formatPrice(variant.code)}`)}</option>`)
       .join("");
 
     if (!group.label) return options;
@@ -945,6 +1067,8 @@ function renderCart() {
   $("openCartButton").setAttribute("aria-label", `Apri carrello, ${itemCountLabel}`);
   $("requestType").value = state.requestType;
   $("generalNotes").value = state.generalNotes;
+  const cartPricing = getCartPricing();
+  renderCartPricingSummary(cartPricing);
 
   const list = $("cartList");
   list.innerHTML = "";
@@ -955,6 +1079,7 @@ function renderCart() {
   }
 
   state.cart.forEach(item => {
+    const pricing = buildItemPricing(item);
     const element = document.createElement("article");
     element.className = "cart-item";
     element.innerHTML = `
@@ -974,6 +1099,10 @@ function renderCart() {
         ${item.files.map(file => `<li>Allegato: ${escapeHtml(file)}</li>`).join("")}
         ${item.notes ? `<li>Note: ${escapeHtml(item.notes)}</li>` : ""}
       </ul>
+      <div class="cart-pricing">
+        ${pricing.rows.map(row => `<div>${escapeHtml(formatPricingRow(row))}</div>`).join("")}
+        <strong>Subtotale: ${escapeHtml(formatMoney(pricing.total))}</strong>
+      </div>
     `;
     element.querySelector("[data-remove]").addEventListener("click", () => {
       state.cart = state.cart.filter(cartItem => cartItem.id !== item.id);
@@ -982,6 +1111,17 @@ function renderCart() {
     });
     list.appendChild(element);
   });
+}
+
+function renderCartPricingSummary(cartPricing = getCartPricing()) {
+  const target = $("cartPricingSummary");
+  if (!target) return;
+
+  const missingText = cartPricing.missingCount
+    ? ` - ${cartPricing.missingCount} righe senza prezzo numerico`
+    : "";
+
+  target.textContent = `Totale listino IVA esclusa: ${formatMoney(cartPricing.total)}${missingText}`;
 }
 
 function openCartPanel() {
@@ -1000,7 +1140,10 @@ function closeCartPanel() {
 
 function buildPrintDocument() {
   const now = new Date();
+  const cartPricing = getCartPricing();
   const rows = state.cart.map((item, index) => {
+    const pricing = buildItemPricing(item);
+    const priceRows = pricing.rows.map(row => escapeHtml(formatPricingRow(row))).join("<br>");
     const customizations = item.customizations.length
       ? item.customizations.map(custom => `${custom.name} (${custom.code}) - ${custom.details}`).join("<br>")
       : "Nessuna";
@@ -1029,6 +1172,10 @@ function buildPrintDocument() {
           ${item.notes ? `${escapeHtml(item.notes)}<br>` : ""}
           Allegati PDF:<br>${attachments}
         </td>
+        <td>
+          ${priceRows}<br>
+          <strong>Subtotale: ${escapeHtml(formatMoney(pricing.total))}</strong>
+        </td>
       </tr>
     `;
   }).join("");
@@ -1043,7 +1190,9 @@ function buildPrintDocument() {
         <div><strong>Data:</strong> ${escapeHtml(now.toLocaleString("it-IT"))}</div>
         <div><strong>Tipo richiesta:</strong> ${escapeHtml(getRequestTypeLabel())}</div>
         <div><strong>Numero righe:</strong> ${state.cart.length}</div>
+        <div><strong>Totale listino IVA esclusa:</strong> ${escapeHtml(formatMoney(cartPricing.total))}</div>
       </div>
+      <p><strong>Prezzi:</strong> prezzi di listino IVA esclusa. Le righe senza prezzo numerico restano da definire o su richiesta.</p>
       ${state.generalNotes ? `<p><strong>Note generali:</strong> ${escapeHtml(state.generalNotes)}</p>` : ""}
       <h2>Articoli</h2>
       <table>
@@ -1054,6 +1203,7 @@ function buildPrintDocument() {
             <th>Codice e quantità</th>
             <th>Configurazione</th>
             <th>Note e allegati</th>
+            <th>Prezzi</th>
           </tr>
         </thead>
         <tbody>${rows}</tbody>
@@ -1072,6 +1222,7 @@ function downloadOrderPdf() {
 
 function buildOrderLines() {
   const now = new Date();
+  const cartPricing = getCartPricing();
   const lines = [
     `Richiesta ${getRequestTypeLabel()} - Catalogo Nettuno 2026`,
     "",
@@ -1080,6 +1231,8 @@ function buildOrderLines() {
     `Referente: ${state.customer.contact || "-"}`,
     `Data: ${now.toLocaleString("it-IT")}`,
     `Tipo richiesta: ${getRequestTypeLabel()}`,
+    `Totale listino IVA esclusa: ${formatMoney(cartPricing.total)}`,
+    "Prezzi di listino IVA esclusa. Le righe senza prezzo numerico restano da definire o su richiesta.",
     ""
   ];
 
@@ -1089,6 +1242,7 @@ function buildOrderLines() {
 
   lines.push("Articoli");
   state.cart.forEach((item, index) => {
+    const pricing = buildItemPricing(item);
     lines.push("");
     lines.push(`${index + 1}. ${item.productName}${item.subtitle ? ` - ${item.subtitle}` : ""}`);
     lines.push(`Categoria: ${item.category}`);
@@ -1103,6 +1257,8 @@ function buildOrderLines() {
     });
     item.files.forEach(file => lines.push(`Allegato PDF indicato: ${file}`));
     if (item.notes) lines.push(`Note articolo: ${item.notes}`);
+    pricing.rows.forEach(row => lines.push(`Prezzo: ${formatPricingRow(row)}`));
+    lines.push(`Subtotale: ${formatMoney(pricing.total)}`);
   });
 
   return lines;
@@ -1245,12 +1401,15 @@ function prepareEmail() {
 }
 
 function buildMailBody() {
+  const cartPricing = getCartPricing();
   const lines = [
     `Richiesta ${getRequestTypeLabel()} - Catalogo Nettuno 2026`,
     "",
     `Cliente: ${state.customer.company}`,
     `Email: ${state.customer.email}`,
     `Referente: ${state.customer.contact || "-"}`,
+    `Totale listino IVA esclusa: ${formatMoney(cartPricing.total)}`,
+    "Prezzi di listino IVA esclusa. Le righe senza prezzo numerico restano da definire o su richiesta.",
     "",
     "Nota operativa: generare il PDF dal pulsante apposito e allegarlo alla mail.",
     "",
@@ -1258,6 +1417,7 @@ function buildMailBody() {
   ];
 
   state.cart.forEach((item, index) => {
+    const pricing = buildItemPricing(item);
     lines.push("");
     lines.push(`${index + 1}. ${item.productName}${item.subtitle ? ` - ${item.subtitle}` : ""}`);
     lines.push(`Codice: ${item.variant?.code || ""}`);
@@ -1268,6 +1428,8 @@ function buildMailBody() {
     item.customizations.forEach(custom => lines.push(`Custom: ${custom.name} - ${custom.code} - ${custom.details}`));
     item.files.forEach(file => lines.push(`Allegato indicato: ${file}`));
     if (item.notes) lines.push(`Note: ${item.notes}`);
+    pricing.rows.forEach(row => lines.push(`Prezzo: ${formatPricingRow(row)}`));
+    lines.push(`Subtotale: ${formatMoney(pricing.total)}`);
   });
 
   if (state.generalNotes) {

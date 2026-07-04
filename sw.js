@@ -1,4 +1,4 @@
-const CACHE_NAME = "nettuno-catalogo-2026-v6";
+const CACHE_NAME = "nettuno-catalogo-2026-v8";
 
 const CORE_ASSETS = [
   "./",
@@ -7,6 +7,7 @@ const CORE_ASSETS = [
   "./assets/styles.css",
   "./assets/catalog-extracted.js",
   "./assets/catalog-data.js",
+  "./assets/price-list.js",
   "./assets/app.js",
   "./assets/icons/icon.svg"
 ];
