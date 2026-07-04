@@ -19,6 +19,10 @@
   box-sizing: border-box;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 html,
 body {
   min-height: 100%;
@@ -31,7 +35,7 @@ body {
 }
 
 body.cart-open {
-  overflow: hidden;
+  overflow: auto;
 }
 
 button,
@@ -489,6 +493,10 @@ textarea:focus {
 
 .app-shell.cart-open .workspace {
   grid-template-columns: minmax(0, 1fr);
+  height: auto;
+  min-height: calc(100vh - 86px);
+  overflow: visible;
+  align-content: start;
 }
 
 .app-shell.cart-open .sidebar,
@@ -497,7 +505,14 @@ textarea:focus {
 }
 
 .app-shell.cart-open .cart-panel {
-  display: grid;
+  display: block;
+  min-height: auto;
+  overflow: visible;
+}
+
+.app-shell.cart-open .cart-list {
+  min-height: auto;
+  overflow: visible;
 }
 
 .cart-backdrop {
@@ -571,10 +586,10 @@ textarea:focus {
 }
 
 .cart-item header {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: start;
-  gap: 8px;
+  gap: 12px;
 }
 
 .cart-select-row {
@@ -615,6 +630,7 @@ textarea:focus {
 
 .cart-pricing div {
   color: var(--muted);
+  overflow-wrap: anywhere;
 }
 
 .remove-item {

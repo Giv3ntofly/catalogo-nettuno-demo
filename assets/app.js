@@ -1152,6 +1152,14 @@ function openCartPanel() {
   $("cartBackdrop").hidden = false;
   $("openCartButton").setAttribute("aria-expanded", "true");
   document.body.classList.add("cart-open");
+  window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  try {
+    $("cartPanel").focus({ preventScroll: true });
+  } catch {
+    $("cartPanel").focus?.();
+  }
+  requestAnimationFrame(() => window.scrollTo({ top: 0, left: 0, behavior: "auto" }));
+  window.setTimeout(() => window.scrollTo({ top: 0, left: 0, behavior: "auto" }), 0);
 }
 
 function closeCartPanel() {
@@ -1550,7 +1558,7 @@ function escapeHtml(value) {
 function registerServiceWorker() {
   if (!("serviceWorker" in navigator)) return;
   if (!window.isSecureContext && location.hostname !== "localhost" && location.hostname !== "127.0.0.1") return;
-  navigator.serviceWorker.register("./sw.js?v=20260704-5")
+  navigator.serviceWorker.register("./sw.js?v=20260704-8")
     .then(registration => registration.update())
     .catch(() => {});
 }
